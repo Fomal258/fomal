@@ -1087,7 +1087,7 @@ function SiteHubModal({sites,categories,wrestlers,initialCategory="ALL",initialE
     ]})
   });
 }
-function m1({design:s,sites:stList,categories:catList,wrestlers:wList,manageMode:m,editable:d,onToggleManage:o,onOpenDesign:z,onAddWrestler:R,onOpenSiteHub:openHub,onExportData:expData}){
+function m1({design:s,sites:stList,categories:catList,wrestlers:wList,manageMode:m,editable:d,onToggleManage:o,onOpenDesign:z,onAddWrestler:R,onOpenSiteHub:openHub,onExportData:expData,onOpenGithubSync:openGhSync,githubSyncStatus:ghStatus,githubSyncMsg:ghMsg}){
   const[siteMenuOpen,setSiteMenuOpen]=H.useState(!1),closeTimer=H.useRef(null),wrapRef=H.useRef(null),
   navRef=H.useRef(null),[navPill,setNavPill]=H.useState({left:0,width:0,opacity:0}),[navHovering,setNavHovering]=H.useState(!1),
   ctrlRef=H.useRef(null),[ctrlPill,setCtrlPill]=H.useState({left:0,width:0,opacity:0});
@@ -1182,7 +1182,7 @@ function m1({design:s,sites:stList,categories:catList,wrestlers:wList,manageMode
       c.jsxs("button",{className:`header-edit ${m?"is-active":""}`,disabled:!d,onMouseEnter:e=>moveCtrlPill(e.currentTarget),onFocus:e=>moveCtrlPill(e.currentTarget),onClick:o,"aria-label":m?"편집 완료":"로스터 편집",children:[m?c.jsx(Km,{size:15}):c.jsx(Js,{size:14}),c.jsx("span",{children:m?"편집 완료":"로스터 편집"})]}),
       c.jsxs("button",{className:"header-edit header-design",disabled:!d,onMouseEnter:e => moveCtrlPill(e.currentTarget),onFocus:e=>moveCtrlPill(e.currentTarget),onClick:z,"aria-label":"디자인 편집",children:[c.jsx(Ty,{size:14}),c.jsx("span",{children:"디자인 편집"})]}),
       c.jsxs("button",{className:"header-edit header-add",disabled:!d,onMouseEnter:e=>moveCtrlPill(e.currentTarget),onFocus:e=>moveCtrlPill(e.currentTarget),onClick:R,"aria-label":"선수 추가",children:[c.jsx(Qs,{size:15}),c.jsx("span",{children:"선수 추가"})]}),
-      expData&&c.jsxs("button",{className:"header-edit",disabled:!d,onMouseEnter:e=>moveCtrlPill(e.currentTarget),onFocus:e=>moveCtrlPill(e.currentTarget),onClick:expData,"aria-label":"깃허브용 데이터 저장",title:"현재 찜한 선수·프로필을 roster-data.json 파일로 내려받습니다",children:[c.jsx("span",{children:"📥 데이터 저장"})]})
+      openGhSync&&c.jsxs("button",{className:`header-edit header-gh-sync is-${ghStatus||"idle"}`,disabled:!d,onMouseEnter:e=>moveCtrlPill(e.currentTarget),onFocus:e=>moveCtrlPill(e.currentTarget),onClick:openGhSync,"aria-label":"깃허브 자동 저장 설정",title:ghMsg||"선수를 추가·수정·삭제할 때 깃허브 저장소(roster-data.json)에 자동으로 즉시 반영합니다",children:[c.jsx("span",{className:`gh-sync-dot is-${ghStatus||"idle"}`}),c.jsx("span",{children:ghStatus==="syncing"?"깃허브 저장 중...":ghStatus==="synced"?"깃허브 자동저장 ON":ghStatus==="error"?"깃허브 연동 오류":"깃허브 자동저장"})]}),expData&&c.jsxs("button",{className:"header-edit",disabled:!d,onMouseEnter:e=>moveCtrlPill(e.currentTarget),onFocus:e=>moveCtrlPill(e.currentTarget),onClick:expData,"aria-label":"백업 파일 저장",title:"현재 로스터를 roster-data.json 파일로 내려받습니다",children:[c.jsx("span",{children:"📥 백업"})]})
     ]})
   ]})});
 }
@@ -1192,10 +1192,465 @@ function ensureSiteNav(d){
   return has?d:{...d,navItems:[...d.navItems,{id:"site",label:"SITE",url:"#site"}]};
 }
 function x1(s){const[m,d]=H.useState(()=>window.innerWidth);H.useEffect(()=>{const z=()=>d(window.innerWidth);return window.addEventListener("resize",z),()=>window.removeEventListener("resize",z)},[]);const o=m<540?2:m<760?3:m<1024?4:m<1200?5:9;return Math.min(s,o)}
+const GH_CFG_KEY = "ring-roster-gh-config-v1";
+function detectGithubRepo() {
+  try {
+    const host = window.location.hostname || "";
+    const pathParts = (window.location.pathname || "/").split("/").filter(Boolean);
+    if (host.endsWith(".github.io")) {
+      const owner = host.replace(/\.github\.io$/i, "");
+      const repo = pathParts[0] || `${owner}.github.io`;
+      return { owner, repo };
+    }
+  } catch {}
+  return { owner: "", repo: "" };
+}
+function loadGhConfig() {
+  const det = detectGithubRepo();
+  try {
+    const raw = localStorage.getItem(GH_CFG_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        owner: parsed.owner || det.owner || "",
+        repo: parsed.repo || det.repo || "",
+        branch: parsed.branch || "main",
+        path: parsed.path || "roster-data.json",
+        token: parsed.token || "",
+        autoSync: parsed.autoSync !== false
+      };
+    }
+  } catch {}
+  return { owner: det.owner, repo: det.repo, branch: "main", path: "roster-data.json", token: "", autoSync: true };
+}
+function saveGhConfig(cfg) {
+  try {
+    localStorage.setItem(GH_CFG_KEY, JSON.stringify(cfg));
+  } catch {}
+}
+function utf8ToBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  const chunkSize = 0x8000;
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
+function base64ToUtf8(b64) {
+  const clean = (b64 || "").replace(/\s+/g, "");
+  const bin = atob(clean);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+async function fetchRosterFromGithubApi(cfg) {
+  if (!cfg || !cfg.owner || !cfg.repo) return null;
+  const filePath = (cfg.path || "roster-data.json").replace(/^\/+/, "");
+  const branch = cfg.branch || "main";
+  const url = `https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${filePath}?ref=${encodeURIComponent(branch)}&t=${Date.now()}`;
+  const headers = { Accept: "application/vnd.github+json" };
+  if (cfg.token) headers.Authorization = `Bearer ${cfg.token.trim()}`;
+  const res = await fetch(url, { headers, cache: "no-store" });
+  if (!res.ok) return null;
+  const meta = await res.json();
+  if (meta && meta.content) {
+    return JSON.parse(base64ToUtf8(meta.content));
+  }
+  if (meta && meta.download_url) {
+    const rawRes = await fetch(`${meta.download_url}?t=${Date.now()}`, { cache: "no-store" });
+    if (rawRes.ok) return await rawRes.json();
+  }
+  return null;
+}
+async function pushRosterToGithub(cfg, stateObj, commitTitle) {
+  if (!cfg || !cfg.owner || !cfg.repo || !cfg.token) {
+    throw new Error("깃허브 저장소 정보(소유자/저장소명)와 토큰(PAT)을 입력해 주세요.");
+  }
+  const owner = cfg.owner.trim();
+  const repo = cfg.repo.trim();
+  const branch = (cfg.branch || "main").trim();
+  const filePath = (cfg.path || "roster-data.json").replace(/^\/+/, "").trim();
+  const token = cfg.token.trim();
+  const apiUrl = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${filePath}`;
+  const headers = {
+    Accept: "application/vnd.github+json",
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json"
+  };
+
+  let sha = undefined;
+  const getRes = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}&t=${Date.now()}`, { headers, cache: "no-store" });
+  if (getRes.ok) {
+    const info = await getRes.json();
+    sha = info.sha;
+  } else if (getRes.status !== 404) {
+    const errTxt = await getRes.text().catch(() => "");
+    throw new Error(`깃허브 파일 조회 실패 (${getRes.status}): 저장소 이름·브랜치·토큰 권한을 확인해 주세요. ${errTxt.slice(0, 120)}`);
+  }
+
+  const nextVersion = `roster-${new Date().toISOString().slice(0, 19)}`;
+  const payload = { ...stateObj, sourceVersion: nextVersion };
+  const jsonText = JSON.stringify(payload, null, 2);
+  const body = {
+    message: commitTitle || `Update roster-data.json (${payload.wrestlers?.length || 0} superstars)`,
+    content: utf8ToBase64(jsonText),
+    branch
+  };
+  if (sha) body.sha = sha;
+
+  const putRes = await fetch(apiUrl, {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(body)
+  });
+  if (!putRes.ok) {
+    const errData = await putRes.json().catch(() => ({}));
+    throw new Error(errData.message || `깃허브 저장 실패 (HTTP ${putRes.status})`);
+  }
+  return { payload, nextVersion };
+}
+
+function GithubSyncModal({ config, status, message, onSaveConfig, onSyncNow, onClose }) {
+  const [owner, setOwner] = H.useState(config.owner || "");
+  const [repo, setRepo] = H.useState(config.repo || "");
+  const [branch, setBranch] = H.useState(config.branch || "main");
+  const [path, setPath] = H.useState(config.path || "roster-data.json");
+  const [token, setToken] = H.useState(config.token || "");
+  const [autoSync, setAutoSync] = H.useState(config.autoSync !== false);
+  const [testing, setTesting] = H.useState(false);
+  const [feedback, setFeedback] = H.useState(message || "");
+
+  const handleAutoDetect = () => {
+    const det = detectGithubRepo();
+    if (det.owner) setOwner(det.owner);
+    if (det.repo) setRepo(det.repo);
+    if (!det.owner && !det.repo) {
+      setFeedback("현재 주소가 *.github.io 형태가 아니어서 자동 감지되지 않았습니다. 직접 입력해 주세요.");
+    } else {
+      setFeedback(`감지 완료: ${det.owner} / ${det.repo}`);
+    }
+  };
+
+  const buildCfg = () => ({
+    owner: owner.trim(),
+    repo: repo.trim(),
+    branch: branch.trim() || "main",
+    path: path.trim() || "roster-data.json",
+    token: token.trim(),
+    autoSync
+  });
+
+  const handleSaveAndSync = async e => {
+    e.preventDefault();
+    const nextCfg = buildCfg();
+    onSaveConfig(nextCfg);
+    if (!nextCfg.token || !nextCfg.owner || !nextCfg.repo) {
+      setFeedback("설정이 저장되었습니다. (토큰을 입력하면 즉시 깃허브 자동 저장이 활성화됩니다)");
+      return;
+    }
+    setTesting(true);
+    setFeedback("깃허브 저장소에 현재 로스터를 즉시 동기화하는 중...");
+    try {
+      await onSyncNow(nextCfg, "Sync roster-data.json from site");
+      setFeedback("✅ 깃허브 저장소에 성공적으로 반영되었습니다! 이제 사이트에서 추가·수정·삭제할 때마다 자동으로 깃허브에 즉시 저장됩니다.");
+    } catch (err) {
+      setFeedback(`❌ 오류: ${err?.message || "깃허브 연동에 실패했습니다."}`);
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  return c.jsx("div", {
+    className: "modal-backdrop",
+    onMouseDown: e => e.target === e.currentTarget && onClose(),
+    children: c.jsxs("form", {
+      className: "editor-modal gh-sync-modal",
+      onSubmit: handleSaveAndSync,
+      children: [
+        c.jsxs("div", {
+          className: "editor-header",
+          children: [
+            c.jsxs("div", {
+              children: [
+                c.jsx("p", { className: "editor-kicker", children: "GITHUB DIRECT AUTO-SYNC" }),
+                c.jsx("h3", { children: "깃허브 실시간 자동 저장 설정" })
+              ]
+            }),
+            c.jsx("button", { type: "button", onClick: onClose, "aria-label": "닫기", children: "✕" })
+          ]
+        }),
+        c.jsxs("div", {
+          className: "editor-body",
+          children: [
+            c.jsxs("div", {
+              className: "gh-sync-guide",
+              children: [
+                c.jsx("strong", { children: "💡 한 번만 설정해 두면 파일 다운로드·업로드 없이 100% 자동 반영됩니다!" }),
+                c.jsxs("ol", {
+                  children: [
+                    c.jsxs("li", {
+                      children: [
+                        "깃허브 우측 상단 프로필 → ",
+                        c.jsx("b", { children: "Settings → Developer settings → Personal access tokens → Tokens (classic)" }),
+                        " (또는 Fine-grained tokens) 메뉴로 이동합니다."
+                      ]
+                    }),
+                    c.jsxs("li", {
+                      children: [
+                        c.jsx("b", { children: "Generate new token" }),
+                        "을 누르고 권한에서 ",
+                        c.jsx("b", { children: "repo (또는 Contents: Read and write)" }),
+                        "를 체크해 토큰(ghp_... 또는 github_pat_...)을 발급받습니다."
+                      ]
+                    }),
+                    c.jsxs("li", { children: "아래에 저장소 정보와 토큰을 입력하고 [설정 저장 및 지금 깃허브에 동기화]를 누르면, 이후 선수 추가·삭제·찜·프로필 수정 시 자동으로 깃허브에 커밋됩니다." })
+                  ]
+                })
+              ]
+            }),
+            c.jsxs("div", {
+              className: "gh-sync-grid",
+              children: [
+                c.jsxs("label", {
+                  className: "editor-field",
+                  children: [
+                    c.jsx("span", { children: "GitHub 아이디 (Owner)" }),
+                    c.jsx("input", {
+                      type: "text",
+                      value: owner,
+                      onChange: e => setOwner(e.target.value),
+                      placeholder: "예: my-github-id",
+                      required: true
+                    })
+                  ]
+                }),
+                c.jsxs("label", {
+                  className: "editor-field",
+                  children: [
+                    c.jsx("span", { children: "저장소 이름 (Repository)" }),
+                    c.jsx("input", {
+                      type: "text",
+                      value: repo,
+                      onChange: e => setRepo(e.target.value),
+                      placeholder: "예: ring-roster",
+                      required: true
+                    })
+                  ]
+                })
+              ]
+            }),
+            c.jsxs("div", {
+              className: "gh-sync-grid",
+              children: [
+                c.jsxs("label", {
+                  className: "editor-field",
+                  children: [
+                    c.jsx("span", { children: "브랜치 (Branch)" }),
+                    c.jsx("input", {
+                      type: "text",
+                      value: branch,
+                      onChange: e => setBranch(e.target.value),
+                      placeholder: "main"
+                    })
+                  ]
+                }),
+                c.jsxs("label", {
+                  className: "editor-field",
+                  children: [
+                    c.jsx("span", { children: "데이터 파일 경로 (Path)" }),
+                    c.jsx("input", {
+                      type: "text",
+                      value: path,
+                      onChange: e => setPath(e.target.value),
+                      placeholder: "roster-data.json"
+                    })
+                  ]
+                })
+              ]
+            }),
+            c.jsx("div", {
+              style: { display: "flex", justifyContent: "flex-end", marginTop: "-4px" },
+              children: c.jsx("button", {
+                type: "button",
+                className: "editor-secondary",
+                style: { fontSize: "11px", padding: "4px 9px" },
+                onClick: handleAutoDetect,
+                children: "🔍 현재 접속 주소에서 저장소 자동 감지"
+              })
+            }),
+            c.jsxs("label", {
+              className: "editor-field",
+              children: [
+                c.jsx("span", { children: "GitHub Personal Access Token (브라우저에만 안전하게 보관됨)" }),
+                c.jsx("input", {
+                  type: "password",
+                  value: token,
+                  onChange: e => setToken(e.target.value),
+                  placeholder: "ghp_xxxxxxxxxxxxxxxxxxxx 또는 github_pat_..."
+                })
+              ]
+            }),
+            c.jsxs("label", {
+              className: "gh-sync-check",
+              children: [
+                c.jsx("input", {
+                  type: "checkbox",
+                  checked: autoSync,
+                  onChange: e => setAutoSync(e.target.checked)
+                }),
+                c.jsx("span", { children: "선수 추가·제거·수정·찜 변경 시 깃허브에 즉시 자동 저장 (Auto-Sync 활성화)" })
+              ]
+            }),
+            (feedback || message) &&
+              c.jsx("div", {
+                className: `gh-sync-feedback is-${status || "idle"}`,
+                children: feedback || message
+              })
+          ]
+        }),
+        c.jsxs("div", {
+          className: "editor-footer",
+          children: [
+            token &&
+              c.jsx("button", {
+                type: "button",
+                className: "editor-delete",
+                onClick: () => {
+                  setToken("");
+                  const cleared = { ...buildCfg(), token: "" };
+                  onSaveConfig(cleared);
+                  setFeedback("토큰 연결이 해제되었습니다.");
+                },
+                children: "연결 해제"
+              }),
+            c.jsx("button", { type: "button", className: "editor-cancel", onClick: onClose, children: "닫기" }),
+            c.jsx("button", {
+              type: "submit",
+              className: "editor-save",
+              disabled: testing,
+              children: testing ? "깃허브에 동기화 중..." : "설정 저장 및 지금 깃허브에 동기화"
+            })
+          ]
+        })
+      ]
+    })
+  });
+}
+
 function j1(){
   const[s,m]=H.useState(S1),[d,o]=H.useState(!1),[z,R]=H.useState(!1),[Q,C]=H.useState(!1),[Z,P]=H.useState(!1),[_,p]=H.useState(null),[N,A]=H.useState(null),[I,F]=H.useState(!1),[hubOpen,setHubOpen]=H.useState(!1),[siteTarget,setSiteTarget]=H.useState(null),[siteInitCat,setSiteInitCat]=H.useState("ALL"),[D,Y]=H.useState(!1),sl=H.useRef(!0),W=x1(s.columns),K=ensureSiteNav(Ey(s.design)),stList=Array.isArray(s.sites)&&s.sites.length>0?s.sites:DEFAULT_SITES,catList=Array.isArray(s.siteCategories)&&s.siteCategories.length>0?s.siteCategories:DEFAULT_SITE_CATS,Gl=d;
-  H.useEffect(()=>{let q=!1;const makeSig=st=>{if(!st||!Array.isArray(st.wrestlers))return"";const fIds=st.wrestlers.filter(w=>w.favorite).map(w=>w.id).sort().join(",");return`${st.sourceVersion||""}|${st.wrestlers.length}|${fIds}|${st.sortOrder||""}|${st.columns||""}`};const loadAll=async()=>{let remote=null;try{const res=await fetch(`roster-data.json?t=${Date.now()}`,{cache:"no-store"});if(res.ok)remote=await res.json()}catch{}const base=remote&&Array.isArray(remote.wrestlers)?remote:S1;const baseSig=makeSig(base);const tl=await Cy();if(q)return;const savedRemoteSig= (() => {try{return localStorage.getItem("ring-roster-remote-sig")||""}catch{return""}})();const remoteChanged=baseSig&&baseSig!==savedRemoteSig;if(!tl||remoteChanged){try{localStorage.setItem("ring-roster-remote-sig",baseSig)}catch{}const nextState={wrestlers:base.wrestlers.map($l=>({...$l,names:la($l)})),columns:Math.max(3,Math.min(9,base.columns||5)),sortOrder:base.sortOrder??"default",design:ensureSiteNav(Ey(base.design??bn)),sites:Array.isArray(base.sites)&&base.sites.length>0?base.sites:DEFAULT_SITES,siteCategories:Array.isArray(base.siteCategories)&&base.siteCategories.length>0?base.siteCategories:DEFAULT_SITE_CATS,sourceVersion:base.sourceVersion||"roster-2026-11-10-sync"};m(nextState);try{await Dy(nextState)}catch{}return}m({wrestlers:tl.wrestlers.map($l=>({...$l,names:la($l)})),columns:Math.max(3,Math.min(9,tl.columns||5)),sortOrder:tl.sortOrder??"default",design:ensureSiteNav(Ey(tl.design??bn)),sites:Array.isArray(tl.sites)&&tl.sites.length>0?tl.sites:DEFAULT_SITES,siteCategories:Array.isArray(tl.siteCategories)&&tl.siteCategories.length>0?tl.siteCategories:DEFAULT_SITE_CATS,sourceVersion:tl.sourceVersion||base.sourceVersion})};return loadAll().catch(()=>!q&&R(!0)).finally(()=>!q&&o(!0)),()=>{q=!0}},[]),
-  H.useEffect(()=>{if(d){if(sl.current){sl.current=!1;return}Dy(s).then(()=>C(!1)).catch(()=>C(!0))}},[s,d]),
+  const[ghConfig,setGhConfig]=H.useState(()=>loadGhConfig());
+  const[ghModalOpen,setGhModalOpen]=H.useState(!1);
+  const[ghStatus,setGhStatus]=H.useState(()=> {
+    const c0 = loadGhConfig();
+    return c0.token && c0.owner && c0.repo && c0.autoSync ? "synced" : "idle";
+  });
+  const[ghMsg,setGhMsg]=H.useState("");
+  const syncTimerRef=H.useRef(null);
+  const skipNextRemotePushRef=H.useRef(!0);
+
+  const makeSig=st=>{
+    if(!st||!Array.isArray(st.wrestlers))return"";
+    const fIds=st.wrestlers.filter(w=>w.favorite).map(w=>w.id).sort().join(",");
+    const wIds=st.wrestlers.map(w=>`${w.id}:${(w.names||[])[0]||""}:${w.image?.length||0}`).join("|");
+    return`${st.sourceVersion||""}|${st.wrestlers.length}|${fIds}|${st.sortOrder||""}|${st.columns||""}|${wIds.length}`;
+  };
+
+  const syncToGithubNow = H.useCallback(async (cfgOverride, customMsg, stateOverride) => {
+    const activeCfg = cfgOverride || ghConfig;
+    const targetState = stateOverride || s;
+    if (!activeCfg.owner || !activeCfg.repo || !activeCfg.token) {
+      throw new Error("깃허브 저장소 정보와 토큰을 먼저 설정해 주세요.");
+    }
+    setGhStatus("syncing");
+    setGhMsg("깃허브 저장소에 변경 사항을 저장하는 중...");
+    try {
+      const { payload } = await pushRosterToGithub(activeCfg, targetState, customMsg);
+      const newSig = makeSig(payload);
+      try { localStorage.setItem("ring-roster-remote-sig", newSig); } catch {}
+      setGhStatus("synced");
+      const timeStr = new Date().toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      setGhMsg(`깃허브 자동 저장 완료 (${timeStr})`);
+      return payload;
+    } catch (err) {
+      setGhStatus("error");
+      setGhMsg(err?.message || "깃허브 자동 저장 실패");
+      throw err;
+    }
+  }, [ghConfig, s]);
+
+  H.useEffect(()=>{
+    let q=!1;
+    const loadAll=async()=>{
+      const cfg0 = loadGhConfig();
+      let remote=null;
+      try {
+        remote = await fetchRosterFromGithubApi(cfg0);
+      } catch {}
+      if (!remote) {
+        try{
+          const res=await fetch(`roster-data.json?t=${Date.now()}`,{cache:"no-store"});
+          if(res.ok)remote=await res.json();
+        }catch{}
+      }
+      const base=remote&&Array.isArray(remote.wrestlers)?remote:S1;
+      const baseSig=makeSig(base);
+      const tl=await Cy();
+      if(q)return;
+      const savedRemoteSig=(()=>{try{return localStorage.getItem("ring-roster-remote-sig")||""}catch{return""}})();
+      const remoteChanged=baseSig&&baseSig!==savedRemoteSig;
+      if(!tl||remoteChanged){
+        try{localStorage.setItem("ring-roster-remote-sig",baseSig)}catch{}
+        const nextState={
+          wrestlers:base.wrestlers.map($l=>({...$l,names:la($l)})),
+          columns:Math.max(3,Math.min(9,base.columns||5)),
+          sortOrder:base.sortOrder??"default",
+          design:ensureSiteNav(Ey(base.design??bn)),
+          sites:Array.isArray(base.sites)&&base.sites.length>0?base.sites:DEFAULT_SITES,
+          siteCategories:Array.isArray(base.siteCategories)&&base.siteCategories.length>0?base.siteCategories:DEFAULT_SITE_CATS,
+          sourceVersion:base.sourceVersion||"roster-2026-11-10-sync"
+        };
+        skipNextRemotePushRef.current = !0;
+        m(nextState);
+        try{await Dy(nextState)}catch{}
+        return;
+      }
+      skipNextRemotePushRef.current = !0;
+      m({
+        wrestlers:tl.wrestlers.map($l=>({...$l,names:la($l)})),
+        columns:Math.max(3,Math.min(9,tl.columns||5)),
+        sortOrder:tl.sortOrder??"default",
+        design:ensureSiteNav(Ey(tl.design??bn)),
+        sites:Array.isArray(tl.sites)&&tl.sites.length>0?tl.sites:DEFAULT_SITES,
+        siteCategories:Array.isArray(tl.siteCategories)&&tl.siteCategories.length>0?tl.siteCategories:DEFAULT_SITE_CATS,
+        sourceVersion:tl.sourceVersion||base.sourceVersion
+      });
+    };
+    return loadAll().catch(()=>!q&&R(!0)).finally(()=>!q&&o(!0)),()=>{q=!0};
+  },[]);
+
+  H.useEffect(()=>{
+    if(!d)return;
+    if(sl.current){
+      sl.current=!1;
+      return;
+    }
+    Dy(s).then(()=>C(!1)).catch(()=>C(!0));
+    if(skipNextRemotePushRef.current){
+      skipNextRemotePushRef.current=!1;
+      return;
+    }
+    if(ghConfig.autoSync && ghConfig.token && ghConfig.owner && ghConfig.repo){
+      if(syncTimerRef.current) window.clearTimeout(syncTimerRef.current);
+      setGhStatus("syncing");
+      setGhMsg("변경 사항 감지됨 · 깃허브에 자동 저장 중...");
+      syncTimerRef.current = window.setTimeout(()=>{
+        syncToGithubNow(ghConfig, `Auto-sync roster (${s.wrestlers.length} superstars)`, s).catch(()=>{});
+      }, 900);
+    }
+  },[s,d]);
+
   H.useEffect(()=>{const q=()=>Y(window.scrollY>420);return q(),window.addEventListener("scroll",q,{passive:!0}),()=>window.removeEventListener("scroll",q)},[]);
   const Hl=q=>m(tl=>({...tl,columns:Math.max(3,Math.min(9,tl.columns+q))})),wl=q=>m(tl=>({...tl,sortOrder:q})),Xl=q=>m(tl=>({...tl,wrestlers:tl.wrestlers.map(nl=>nl.id===q?{...nl,favorite:!nl.favorite}:nl)})),
   st=async q=>{const tl=q.image.startsWith("data:image/")?await Ry(q.image):q.image;if(_==="new"){const nl=`wrestler-${Date.now()}`;m(Nl=>({...Nl,wrestlers:[...Nl.wrestlers,{id:nl,...q,image:tl,url:void 0,createdAt:Date.now()}]}))}else _&&m(nl=>({...nl,wrestlers:nl.wrestlers.map(Nl=>Nl.id===_.id?{...Nl,...q,image:tl,url:void 0}:Nl)}));p(null)},
@@ -1203,16 +1658,26 @@ function j1(){
   U=q=>{m(tl=>({...tl,design:q})),F(!1)},
   saveSites=nextSites=>{m(tl=>({...tl,sites:nextSites}))},
   saveSiteCategories=nextCats=>{m(tl=>({...tl,siteCategories:nextCats}))},
+  handleSaveGhConfig=nextCfg=>{
+    saveGhConfig(nextCfg);
+    setGhConfig(nextCfg);
+    if(nextCfg.token && nextCfg.owner && nextCfg.repo && nextCfg.autoSync){
+      setGhStatus("synced");
+    } else {
+      setGhStatus("idle");
+    }
+  },
   ll={"--brand-accent":K.accent,"--profile-highlight":K.profileHighlight,"--profile-modal-bg":K.profileModalBg,"--profile-modal-layer":K.profileModalBgMode==="gradient"?`linear-gradient(${K.profileModalGradientAngle}deg, ${K.profileModalGradientFrom}, ${K.profileModalGradientTo})`:K.profileModalBgMode==="image"&&K.profileModalBgImage?`url("${K.profileModalBgImage}")`:"none","--profile-modal-border":K.profileModalBorder,"--profile-modal-border-width":`${K.profileModalBorderWidth}px`,"--profile-modal-overlay":`${K.profileModalOverlay/100}`,"--profile-modal-header-bg":K.profileModalHeaderBg,"--profile-modal-text":K.profileModalText,"--profile-modal-accent":K.profileModalAccent,"--profile-modal-field-bg":K.profileModalFieldBg,"--header-text":K.headerText,"--hero-text":K.heroText,"--roster-text":K.rosterText,"--roster-bg-layer":K.rosterBgMode==="gradient"?`linear-gradient(${K.rosterGradientAngle}deg, ${K.rosterGradientFrom}, ${K.rosterGradientTo})`:K.rosterBgMode==="image"&&K.rosterBgImage?`url("${K.rosterBgImage}")`:"none","--roster-overlay":`${(K.rosterOverlay??0)/100}`,"--font-scale":`${K.fontScale/100}`};
   return c.jsxs("div",{id:"top",className:"site-shell",style:ll,children:[
-    K.showHeader&&c.jsx(m1,{design:K,sites:stList,categories:catList,wrestlers:s.wrestlers,manageMode:Z,editable:Gl,onToggleManage:()=>P(q=>!q),onOpenDesign:()=>F(!0),onAddWrestler:()=>p("new"),onOpenSiteHub:opts=>{setSiteTarget(opts?.editTarget??null);setSiteInitCat(opts?.category??"ALL");setHubOpen(!0)},onExportData:()=>{const payload={...s,sourceVersion:"roster-"+new Date().toISOString().slice(0,19)};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="roster-data.json";a.click();URL.revokeObjectURL(url)}}),
+    K.showHeader&&c.jsx(m1,{design:K,sites:stList,categories:catList,wrestlers:s.wrestlers,manageMode:Z,editable:Gl,onToggleManage:()=>P(q=>!q),onOpenDesign:()=>F(!0),onAddWrestler:()=>p("new"),onOpenSiteHub:opts=>{setSiteTarget(opts?.editTarget??null);setSiteInitCat(opts?.category??"ALL");setHubOpen(!0)},onOpenGithubSync:()=>setGhModalOpen(!0),githubSyncStatus:ghStatus,githubSyncMsg:ghMsg,onExportData:()=>{const payload={...s,sourceVersion:"roster-"+new Date().toISOString().slice(0,19)};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="roster-data.json";a.click();URL.revokeObjectURL(url)}}),
     K.showHero&&c.jsx($y,{design:K,wrestlers:s.wrestlers}),
     c.jsx(h1,{design:K,roster:s,visibleColumns:W,ready:d,loadFailed:z,storageError:Q,manageMode:Z,editable:Gl,onSort:wl,onColumns:Hl,onToggleFavorite:Xl,onEdit:p,onAdd:()=>p("new"),onInfo:A,onImportData:parsed=>m(prev=>({...prev,...parsed,wrestlers:parsed.wrestlers.map($l=>({...$l,names:la($l)})),sourceVersion:parsed.sourceVersion||"roster-"+Date.now()}))}),
     D&&c.jsx("button",{className:"back-to-top",onClick:()=>window.scrollTo({top:0,behavior:"smooth"}),"aria-label":"맨 위로 이동",children:c.jsx(vy,{size:18})}),
     _&&c.jsx(u1,{wrestler:_==="new"?null:_,design:K,onSave:st,onClose:()=>p(null),onDelete:_==="new"?void 0:al}),
     N&&c.jsx(n0,{wrestler:N,animation:K.profileModalAnimation,duration:K.profileModalDuration,onClose:()=>A(null),onEdit:()=>{p(N),A(null)}}),
     I&&c.jsx(My,{design:K,onSave:U,onClose:()=>F(!1)}),
-    hubOpen&&c.jsx(SiteHubModal,{sites:stList,categories:catList,wrestlers:s.wrestlers,initialCategory:siteInitCat,initialEditSite:siteTarget,onSaveSites:saveSites,onSaveCategories:saveSiteCategories,onClose:()=>{setHubOpen(!1);setSiteTarget(null);setSiteInitCat("ALL")}})
+    hubOpen&&c.jsx(SiteHubModal,{sites:stList,categories:catList,wrestlers:s.wrestlers,initialCategory:siteInitCat,initialEditSite:siteTarget,onSaveSites:saveSites,onSaveCategories:saveSiteCategories,onClose:()=>{setHubOpen(!1);setSiteTarget(null);setSiteInitCat("ALL")}}),
+    ghModalOpen&&c.jsx(GithubSyncModal,{config:ghConfig,status:ghStatus,message:ghMsg,onSaveConfig:handleSaveGhConfig,onSyncNow:syncToGithubNow,onClose:()=>setGhModalOpen(!1)})
   ]});
 }
 ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
