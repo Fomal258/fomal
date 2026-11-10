@@ -1983,7 +1983,7 @@
     }
   ],
   "columns": 5,
-  "sortOrder": "random",
+  "sortOrder": "newest",
   "design": {
     "showHeader": true,
     "showBrand": true,
@@ -2119,5 +2119,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-10T12:41:37"
+  "sourceVersion": "roster-2026-11-10T12:41:52"
 }
