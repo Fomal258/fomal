@@ -5785,3 +5785,63 @@ a {
     drop-shadow(0 2px 3px rgba(0, 0, 0, .98))
     drop-shadow(0 0 8px rgba(226, 184, 78, .55)) !important;
 }
+
+
+/* ────────────────────────────────────────────────────────────
+   33. 찜한 선수 & 마우스 호버 시 이름 어두워짐(다크 틴트/그림자) 완전 제거 · 초고휘도 고정
+   ──────────────────────────────────────────────────────────── */
+.tc-shell .card-caption.tc-nameplate,
+.tc-shell:hover .card-caption.tc-nameplate,
+.tc-shell.is-champ .card-caption.tc-nameplate,
+.tc-shell.is-champ:hover .card-caption.tc-nameplate,
+.tc-shell .card-caption.tc-nameplate:hover,
+.tc-shell .card-caption.tc-nameplate:focus,
+.tc-shell .card-caption.tc-nameplate:active {
+  background: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+/* 일반 선수 이름 (평소 & 호버 모두 어두운 회색 없이 쨍하고 밝은 화이트·실버 고정) */
+.tc-shell:not(.is-champ) .tc-name-text,
+.tc-shell:not(.is-champ):hover .tc-name-text,
+.tc-shell:not(.is-champ) .card-caption.tc-nameplate:hover .tc-name-text {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #ffffff 55%,
+    #e2e8f0 100%
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  filter:
+    drop-shadow(0 1.5px 0 #000000)
+    drop-shadow(0 3px 5px rgba(0, 0, 0, .85)) !important;
+}
+
+/* 찜한(챔피언) 선수 이름 (평소 & 호버 모두 어두운 갈색·주황색을 완전히 뺀 밝은 순금·화이트 골드 고정) */
+.tc-shell.is-champ .tc-name-text,
+.tc-shell.is-champ:hover .tc-name-text,
+.tc-shell.is-champ .card-caption.tc-nameplate:hover .tc-name-text {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #fffef0 45%,
+    #fde047 100%
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: #fef08a !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  filter:
+    drop-shadow(0 1.5px 0 #000000)
+    drop-shadow(0 3px 5px rgba(0, 0, 0, .85)) !important;
+}
