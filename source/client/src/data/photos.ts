@@ -92,7 +92,7 @@ export const photoFor = (names: string[]): string => {
 };
 
 // 호환성을 위해 남겨두되, 항상 false를 반환하여 index.json에 없는 선수도 언제든 photos/ 폴더를 직접 탐색하게 합니다.
-export const hasPhotoIndex = false;
+export const hasPhotoIndex = true; // 페이지 로드 시 수천 건의 404 이미지 요청(GitHub Pages Rate Limit) 방지
 
 // 선수 이름(예: "Alex Shelley")으로 가능한 파일명 후보들을 순서대로 생성합니다.
 // - "Alex Shelley.jpg" (원래 이름 그대로)

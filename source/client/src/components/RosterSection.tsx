@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type MouseEvent } from "react";
 import { ChevronDown, Grid2X2, Heart, ImagePlus, Minus, Pencil, Plus, RotateCw, Search, Star, X } from "lucide-react";
 import type { SiteDesign } from "@/lib/design";
 import { hasPhotoIndex, imageOf, probePhoto } from "@/data/photos";
@@ -162,49 +162,6 @@ function ChampBeltIcon({ active }: { active: boolean }) {
 }
 
 // 카드 한 장 (① 트레이딩 카드 프레임 + ② 실루엣 포스터 플레이스홀더 + ④ 3D 틸트·광택·챔피언십 골드)
-// 이름을 카드 폭에 꽉 차게 맞추는 자동 피팅 (한 줄 유지, 가능한 한 가장 크게)
-// - 기준 크기(100px)로 실제 글자 폭을 한 번 재서 비율로 최종 크기를 계산합니다.
-// - 결과는 CSS 변수 --fit-fs 로만 전달합니다 (index.css 33번 섹션이 !important 로 읽어 적용).
-const FIT_MIN = 11; // 아주 긴 이름도 이 아래로는 줄이지 않음 (이보다 길면 말줄임)
-const FIT_MAX = 36; // 아주 짧은 이름이 과하게 커지지 않도록 상한
-function FitName({ name }: { name: string }) {
-  const ref = useRef<HTMLSpanElement | null>(null);
-
-  useLayoutEffect(() => {
-    const el = ref.current;
-    const box = el?.parentElement;
-    if (!el || !box) return;
-
-    const fit = () => {
-      const avail = el.clientWidth;
-      if (avail <= 0) return; // 숨겨진 카드는 건너뜀
-      el.style.setProperty("--fit-fs", "100px"); // 기준 크기로 자연 폭 측정
-      const natural = el.scrollWidth;
-      if (natural <= 0) return;
-      const raw = (100 * avail) / natural; // 글자 폭은 크기에 비례
-      const max = Math.min(FIT_MAX, box.clientWidth * 0.15);
-      const size = Math.max(FIT_MIN, Math.min(max, raw * 0.985)); // 0.985 = 반올림 오차 여유
-      el.style.setProperty("--fit-fs", `${Math.floor(size * 10) / 10}px`);
-    };
-
-    fit();
-    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(fit) : null;
-    observer?.observe(box);
-    let alive = true;
-    document.fonts?.ready.then(() => alive && fit()); // 웹폰트가 늦게 뜨는 경우 재계산
-    return () => {
-      alive = false;
-      observer?.disconnect();
-    };
-  }, [name]);
-
-  return (
-    <span className="tc-name-text" ref={ref}>
-      {name}
-    </span>
-  );
-}
-
 function Card({
   wrestler,
   index,
@@ -362,7 +319,7 @@ function Card({
         {imageAction}
         {/* ① 하단 메탈릭 네임플레이트 */}
         <button className="card-caption tc-nameplate" onClick={() => onInfo(wrestler)} aria-label={`${name} 선수 정보 보기`}>
-          <FitName name={name} />
+          <span className={`tc-name-text ${name.length > 20 ? "is-xlong" : name.length > 14 ? "is-long" : ""}`}>{name}</span>
           <span className="card-arrow">↗</span>
         </button>
       </div>

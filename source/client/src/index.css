@@ -5439,7 +5439,7 @@ a {
 
 
 /* ────────────────────────────────────────────────────────────
-   32. 실버 크롬(평소) & 24K 럭셔리 골드 크롬(찜) 테두리 · 메탈릭 크롬 1줄 대형 타이포그래피 · 금장 벨트
+   32. 실버 크롬(평소) & 24K 럭셔리 골드 크롬(찜) 테두리 · 고휘도 초고해상도 메탈릭 대형 이름 · 금장 벨트
    ──────────────────────────────────────────────────────────── */
 
 /* ① 모든 프로필 카드: 마우스 호버 시 정자세로 부드럽게 살짝 커지는(Scale Up) 효과 */
@@ -5481,24 +5481,24 @@ a {
   transform: none !important;
   background: linear-gradient(
     135deg,
-    #5b6270 0%,
-    #d8e0ea 20%,
-    #8690a0 42%,
+    #646c7a 0%,
+    #e2e8f0 22%,
+    #94a0b2 44%,
     #ffffff 50%,
-    #6e7787 58%,
-    #cfd7e3 82%,
-    #525866 100%
+    #788292 58%,
+    #d8e0ea 82%,
+    #58606e 100%
   ) !important;
   clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px) !important;
   box-shadow:
     0 14px 30px rgba(0, 0, 0, .72),
-    0 0 10px rgba(203, 213, 225, .12) !important;
+    0 0 10px rgba(203, 213, 225, .14) !important;
   transition: box-shadow .28s ease, filter .28s ease !important;
 }
 .tc-shell:not(.is-champ):hover .tc-frame {
   box-shadow:
     0 18px 36px rgba(0, 0, 0, .82),
-    0 0 16px rgba(226, 232, 240, .24) !important;
+    0 0 18px rgba(226, 232, 240, .28) !important;
 }
 
 /* ③ 찜한(챔피언) 프로필 테두리: 깊고 중후한 24K 샴페인·앤틱 럭셔리 골드 크롬 + 마우스 추적 스페큘러 광택 */
@@ -5506,53 +5506,53 @@ a {
   transform: none !important;
   background:
     radial-gradient(
-      155px circle at var(--gx, 50%) var(--gy, 50%),
-      rgba(255, 252, 235, .96) 0%,
-      rgba(243, 210, 122, .88) 28%,
-      rgba(186, 134, 42, .45) 58%,
+      165px circle at var(--gx, 50%) var(--gy, 50%),
+      rgba(255, 253, 240, .98) 0%,
+      rgba(247, 218, 132, .92) 30%,
+      rgba(198, 146, 46, .48) 60%,
       transparent 100%
     ),
     linear-gradient(
       135deg,
-      #593d0b 0%,
-      #dfbd69 22%,
-      #8f6519 44%,
-      #fff4cc 51%,
-      #9c6f1c 58%,
-      #e6c674 80%,
-      #4f3508 100%
+      #63450e 0%,
+      #e6c670 22%,
+      #9a6d1c 44%,
+      #fff6d1 51%,
+      #a67720 58%,
+      #ebd082 80%,
+      #593d0b 100%
     ) !important;
   box-shadow:
     0 15px 34px rgba(0, 0, 0, .8),
-    0 0 18px rgba(218, 175, 72, .28) !important;
+    0 0 18px rgba(226, 184, 78, .32) !important;
 }
 .tc-shell.is-champ:hover .tc-frame {
   transform: none !important;
   background:
     radial-gradient(
-      185px circle at var(--gx, 50%) var(--gy, 50%),
+      195px circle at var(--gx, 50%) var(--gy, 50%),
       #ffffff 0%,
-      #fff7d6 24%,
-      #e8c162 50%,
-      rgba(184, 134, 38, .38) 76%,
+      #fff8db 26%,
+      #f0cb69 52%,
+      rgba(196, 144, 42, .42) 78%,
       transparent 100%
     ),
     linear-gradient(
       135deg,
-      #593d0b 0%,
-      #dfbd69 22%,
-      #8f6519 44%,
-      #fff4cc 51%,
-      #9c6f1c 58%,
-      #e6c674 80%,
-      #4f3508 100%
+      #63450e 0%,
+      #e6c670 22%,
+      #9a6d1c 44%,
+      #fff6d1 51%,
+      #a67720 58%,
+      #ebd082 80%,
+      #593d0b 100%
     ) !important;
   box-shadow:
     0 20px 40px rgba(0, 0, 0, .88),
-    0 0 26px rgba(230, 190, 95, .48) !important;
+    0 0 28px rgba(240, 198, 96, .52) !important;
 }
 
-/* ④ 내부 이미지 영역 & 하단 가독성 쉐이드 (메탈릭 글자가 100% 선명하게 읽히도록 하단 대비 강화) */
+/* ④ 내부 이미지 영역 & 하단 가독성 쉐이드 */
 .tc-shell .card-image-button,
 .tc-shell .card-image-link {
   display: block !important;
@@ -5587,18 +5587,19 @@ a {
   box-shadow: none !important;
   background: linear-gradient(
     to bottom,
-    rgba(6, 6, 9, 0) 44%,
-    rgba(6, 6, 9, .64) 74%,
+    rgba(6, 6, 9, 0) 46%,
+    rgba(6, 6, 9, .68) 76%,
     rgba(4, 4, 7, .97) 100%
   ) !important;
 }
 
-/* ⑤ 첨부 이미지(CHROME) 스타일의 고가독성 메탈릭 타이포그래피 (평소: 실버 크롬 / 찜: 럭셔리 골드 크롬 + 가능한 한 1줄 유지 & 대형 사이즈) */
-.tc-shell .card-caption.tc-nameplate {
+/* ⑤ 고휘도·고가독성 대형 메탈릭 이름 (어두운 중간 띠 완전 제거 + 글자 크기 대폭 확대 + 칼같은 입체 베벨) */
+.tc-shell .card-caption.tc-nameplate,
+.tc-shell .card-caption.tc-nameplate:hover {
   position: absolute !important;
-  left: 6px !important;
-  right: 6px !important;
-  bottom: 11px !important;
+  left: 5px !important;
+  right: 5px !important;
+  bottom: 10px !important;
   z-index: 9 !important;
   padding: 0 2px !important;
   border: 0 !important;
@@ -5607,99 +5608,109 @@ a {
   text-align: center !important;
   pointer-events: auto !important;
   overflow: visible !important;
+  color: inherit !important;
 }
 
-/* 평소 프로필 이름: 첨부된 CHROME 레퍼런스처럼 상단 하이라이트 → 중간 호라이즌 음영 → 하단 반사광이 맺히는 실버 크롬 텍스트 */
+/* 평소 프로필: 어두운 회색 음영 없이 눈부시게 밝은 플래티넘 실버 메탈릭 + 칼같은 3D 다크 베벨 */
 .tc-shell .tc-name-text {
   display: block !important;
   width: 100% !important;
   font-family: "Barlow Condensed", "Oswald", "Noto Sans KR", sans-serif !important;
-  font-style: normal !important;
+  font-style: italic !important;
   font-weight: 900 !important;
-  /* 기본 이름(14자 이하)은 큼직하고 시원하게 표시 */
-  font-size: clamp(20px, 1.72vw, 27px) !important;
-  line-height: 1.08 !important;
-  letter-spacing: .03em !important;
+  /* 기본 글자 크기를 대폭 키워 한눈에 시원하게 들어오게 설정 */
+  font-size: clamp(23px, 2.05vw, 31px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: .025em !important;
   text-transform: uppercase !important;
   white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
   max-height: none !important;
-  /* CHROME 레퍼런스 이미지의 수직 다단 금속 반사 그라데이션 */
+  padding-bottom: 2px !important;
+  /* 어두운 중간띠를 완전히 없애고 밝은 순백~밝은 실버 톤으로만 구성된 고휘도 실버 그라데이션 */
   background: linear-gradient(
     180deg,
     #ffffff 0%,
-    #f1f5f9 24%,
-    #94a3b8 47%,
-    #475569 51%,
-    #cbd5e1 62%,
-    #ffffff 84%,
-    #94a3b8 100%
+    #f8fafc 38%,
+    #cbd5e1 68%,
+    #f1f5f9 100%
   ) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   text-shadow: none !important;
-  /* 배경 사진과 완벽하게 분리되어 가독성을 극대화하는 다중 블랙 외곽 그림자 */
+  /* 먹물처럼 번지던 다중 블러를 빼고, 또렷한 1px·2px 솔리드 3D 입체 엣지 + 하단 그림자만 적용 */
   filter:
-    drop-shadow(0 1.5px 0 #000000)
-    drop-shadow(0 -1px 0 rgba(0, 0, 0, .85))
-    drop-shadow(1.5px 0 0 rgba(0, 0, 0, .85))
-    drop-shadow(-1.5px 0 0 rgba(0, 0, 0, .85))
-    drop-shadow(0 4px 10px rgba(0, 0, 0, .95)) !important;
+    drop-shadow(0 1px 0 #090a0f)
+    drop-shadow(0 2.5px 0 #000000)
+    drop-shadow(0 4px 7px rgba(0, 0, 0, .92)) !important;
   transition: transform .24s ease, filter .24s ease !important;
 }
 
-/* 글자 수가 조금 긴 선수(15~20자, 예: ANDRADE EL IDOLO)도 잘리지 않고 1줄로 꽉 차게 들어오도록 자동 조절 */
+/* 중간 길이 이름(15~20자, 예: ALEXANDER GREY, CHANNING DECKER)도 큼직하게 한 줄 유지 */
 .tc-shell .tc-name-text.is-long {
-  font-size: clamp(16.5px, 1.38vw, 22px) !important;
+  font-size: clamp(19.5px, 1.68vw, 25px) !important;
   letter-spacing: .015em !important;
 }
-/* 글자 수가 매우 긴 선수(21자 이상, 예: MICHAEL ALLEN RICHARD CLARK)도 1줄 유지 */
+/* 아주 긴 이름(21자 이상)도 잘리지 않고 선명하게 한 줄 유지 */
 .tc-shell .tc-name-text.is-xlong {
-  font-size: clamp(13.5px, 1.12vw, 18px) !important;
+  font-size: clamp(15.5px, 1.32vw, 20px) !important;
   letter-spacing: 0em !important;
 }
 
-.tc-shell:hover .tc-name-text {
-  transform: translateY(-2px) !important;
+/* 카드나 이름에 마우스를 올렸을 때 어두워지지 않고 오히려 더 밝고 선명하게 빛남! */
+.tc-shell:hover .tc-name-text,
+.tc-shell .card-caption.tc-nameplate:hover .tc-name-text {
+  transform: translateY(-2px) scale(1.02) !important;
+  filter:
+    brightness(1.1)
+    drop-shadow(0 1px 0 #090a0f)
+    drop-shadow(0 2.5px 0 #000000)
+    drop-shadow(0 5px 10px rgba(0, 0, 0, .96)) !important;
 }
 
-/* 찜한(챔피언) 프로필 이름: 테두리와 세트를 이루는 24K 럭셔리 골드 크롬 메탈릭 텍스트 */
+/* 찜한(챔피언) 프로필 이름: 어두운 갈색을 완전히 뺀 고휘도 24K 샴페인·선샤인 골드 메탈릭 */
 .tc-shell.is-champ .tc-name-text {
   background: linear-gradient(
     180deg,
-    #fffdf5 0%,
-    #fde68a 24%,
-    #cfa03c 47%,
-    #78500d 51%,
-    #e8c468 62%,
-    #fff9db 84%,
-    #b88628 100%
+    #ffffff 0%,
+    #fff9db 28%,
+    #fde047 64%,
+    #f59e0b 90%,
+    #fef08a 100%
   ) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
   filter:
-    drop-shadow(0 1.5px 0 #000000)
-    drop-shadow(0 -1px 0 rgba(0, 0, 0, .9))
-    drop-shadow(1.5px 0 0 rgba(0, 0, 0, .9))
-    drop-shadow(-1.5px 0 0 rgba(0, 0, 0, .9))
-    drop-shadow(0 4px 12px rgba(0, 0, 0, .98))
-    drop-shadow(0 0 10px rgba(230, 186, 78, .35)) !important;
+    drop-shadow(0 1px 0 #1c1102)
+    drop-shadow(0 2.5px 0 #000000)
+    drop-shadow(0 4px 8px rgba(0, 0, 0, .95))
+    drop-shadow(0 0 8px rgba(250, 204, 21, .28)) !important;
+}
+.tc-shell.is-champ:hover .tc-name-text,
+.tc-shell.is-champ .card-caption.tc-nameplate:hover .tc-name-text {
+  transform: translateY(-2px) scale(1.02) !important;
+  filter:
+    brightness(1.12)
+    drop-shadow(0 1px 0 #1c1102)
+    drop-shadow(0 2.5px 0 #000000)
+    drop-shadow(0 5px 10px rgba(0, 0, 0, .98))
+    drop-shadow(0 0 12px rgba(253, 224, 71, .45)) !important;
 }
 
 @media (max-width: 640px) {
   .tc-shell .tc-name-text {
-    font-size: 16.5px !important;
+    font-size: 19px !important;
   }
   .tc-shell .tc-name-text.is-long {
-    font-size: 14px !important;
+    font-size: 16px !important;
   }
   .tc-shell .tc-name-text.is-xlong {
-    font-size: 12px !important;
+    font-size: 13.5px !important;
   }
 }
 
@@ -5773,77 +5784,4 @@ a {
   filter:
     drop-shadow(0 2px 3px rgba(0, 0, 0, .98))
     drop-shadow(0 0 8px rgba(226, 184, 78, .55)) !important;
-}
-
-
-/* ────────────────────────────────────────────────────────────
-   33. 이름 가독성 개선: ① 어두운 띠를 없앤 라이트 바이어스 크롬 ② 폭 맞춤 자동 피팅(최대 크기) ③ 호버 시 크롬 샤인
-   - 32번 섹션의 이름 스타일 위에 덮어씁니다 (같은 선택자 · 파일 뒤쪽 · !important 이므로 이 섹션이 우선).
-   - 글자 크기는 RosterSection.tsx 의 <FitName> 이 --fit-fs 변수로 전달합니다 (없을 땐 기존 clamp 값 사용).
-   - [어두움 수정] 31번 섹션의 text-shadow(검은 그림자)가 호버·찜 상태에서 크롬 글자 위에 덧칠돼 칙칙해지던 문제를 제거합니다 (⑥).
-   ──────────────────────────────────────────────────────────── */
-
-/* ① 글자 크기: 자동 피팅 값 사용 (is-long / is-xlong 단계 축소 대체) */
-.tc-shell .tc-name-text,
-.tc-shell .tc-name-text.is-long,
-.tc-shell .tc-name-text.is-xlong {
-  font-size: var(--fit-fs, clamp(20px, 1.72vw, 27px)) !important;
-  letter-spacing: .03em !important;
-}
-
-/* ② 일반(실버): 글자 한가운데 어두운 띠(#475569)를 없애 어두운 배경에서도 글자가 끊겨 보이지 않는 밝은 크롬
-      + 호버 샤인용 하이라이트 레이어(평소엔 글자 왼쪽 밖에 숨어 있음) */
-.tc-shell .tc-name-text {
-  background-image:
-    linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%),
-    linear-gradient(180deg, #ffffff 0%, #f1f5f9 30%, #cbd5e1 52%, #94a3b8 56%, #cbd5e1 78%, #ffffff 100%) !important;
-  background-size: 260% 100%, 100% 100% !important;
-  background-position: 100% 0, 0 0 !important;
-  background-repeat: no-repeat !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-}
-
-/* ③ 찜(골드): 갈색 띠(#78500d)를 없애고 샴페인 골드로 밝게 */
-.tc-shell.is-champ .tc-name-text {
-  background-image:
-    linear-gradient(105deg, transparent 42%, rgba(255, 251, 230, .96) 50%, transparent 58%),
-    linear-gradient(180deg, #fffdf5 0%, #fde68a 30%, #e8c468 52%, #cfa03c 56%, #e8c468 78%, #fffdf5 100%) !important;
-  background-size: 260% 100%, 100% 100% !important;
-  background-position: 100% 0, 0 0 !important;
-  background-repeat: no-repeat !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-}
-
-/* ④ 호버 시 빛줄기가 글자를 왼쪽 → 오른쪽으로 한 번 지나감
-      (마우스를 뗄 땐 transition 이 없어 즉시 제자리로 → 되감기 애니메이션이 보이지 않음)
-      마우스가 없는 기기 · '동작 줄이기' 설정에서는 샤인 없이 정적으로 표시 */
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .tc-shell:hover .tc-name-text {
-    background-position: 0% 0, 0 0 !important;
-    transition:
-      transform .24s ease,
-      filter .24s ease,
-      background-position .9s ease !important;
-  }
-}
-
-/* ⑥ [어두움 해결] 이름 글자는 '투명 글자 + 배경 그라데이션' 방식이라 text-shadow 가 있으면 그림자가 그라데이션 위에 덧칠되어 글자가 검게 죽음.
-      31번 섹션에 남아 있던 text-shadow(호버 · 찜 규칙, 특이도가 더 높아 32번 섹션의 none 을 이김)를 모든 상태에서 확실히 끔.
-      글자 윤곽·그림자는 filter: drop-shadow(...) 가 이미 담당하므로 가독성 손실 없음 */
-.tc-shell .tc-name-text,
-.tc-shell:hover .tc-name-text,
-.tc-shell.is-champ .tc-name-text,
-.tc-shell.is-champ:hover .tc-name-text {
-  text-shadow: none !important;
-}
-
-/* ⑤ 모바일(640px 이하)에도 자동 피팅 값을 그대로 사용 (32번 섹션의 고정 px 덮어쓰기) */
-@media (max-width: 640px) {
-  .tc-shell .tc-name-text,
-  .tc-shell .tc-name-text.is-long,
-  .tc-shell .tc-name-text.is-xlong {
-    font-size: var(--fit-fs, 16.5px) !important;
-  }
 }
