@@ -6400,3 +6400,13 @@ body,
     min-height: 44px;
   }
 }
+
+
+/* ── 헤더 버튼 hover (슬라이딩 하이라이트 제거) ──────────────── */
+.ctrl-hover-bg { display: none !important; }
+.header-controls .header-edit:hover,
+.header-controls .header-edit:focus-visible {
+  background: rgba(255, 255, 255, .08) !important;
+  border-color: rgba(255, 255, 255, .22) !important;
+  color: #fff !important;
+}

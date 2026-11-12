@@ -307,20 +307,9 @@ export default function SiteHeader({
           className="header-controls"
           onMouseLeave={resetCtrlPill}
         >
-          <span
-            className="ctrl-hover-bg"
-            aria-hidden="true"
-            style={{
-              transform: `translate3d(${ctrlPill.left}px, 0, 0)`,
-              width: `${ctrlPill.width}px`,
-              opacity: ctrlPill.opacity,
-            }}
-          />
           <button
             className={`header-edit ${manageMode ? "is-active" : ""}`}
             disabled={!editable}
-            onMouseEnter={e => moveCtrlPill(e.currentTarget)}
-            onFocus={e => moveCtrlPill(e.currentTarget)}
             onClick={onToggleManage}
             aria-label={manageMode ? "편집 완료" : "로스터 편집"}
           >
@@ -330,8 +319,6 @@ export default function SiteHeader({
           <button
             className="header-edit header-design"
             disabled={!editable}
-            onMouseEnter={e => moveCtrlPill(e.currentTarget)}
-            onFocus={e => moveCtrlPill(e.currentTarget)}
             onClick={onOpenDesign}
             aria-label="디자인 편집"
           >
@@ -341,8 +328,6 @@ export default function SiteHeader({
           <button
             className="header-edit header-add"
             disabled={!editable}
-            onMouseEnter={e => moveCtrlPill(e.currentTarget)}
-            onFocus={e => moveCtrlPill(e.currentTarget)}
             onClick={onAddWrestler}
             aria-label="선수 추가"
           >

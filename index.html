@@ -6104,6 +6104,14 @@ body, .site-shell { background: var(--ink); }
 *, *::before, *::after { animation-duration: .28s; }
 
 
+.ctrl-hover-bg { display: none !important; }
+.header-controls .header-edit:hover,
+.header-controls .header-edit:focus-visible {
+  background: rgba(255, 255, 255, .08) !important;
+  border-color: rgba(255, 255, 255, .22) !important;
+  color: #fff !important;
+}
+
 /* ── unslop 모바일 패스 ─────────────────────────────────────── */
 @media (max-width: 820px) {
   /* 헤더 압축 + 액션 가로 스크롤 */
