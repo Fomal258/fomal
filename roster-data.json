@@ -2076,8 +2076,8 @@
       "createdAt": 1794475824004
     }
   ],
-  "columns": 5,
-  "sortOrder": "random",
+  "columns": 3,
+  "sortOrder": "oldest",
   "design": {
     "showHeader": true,
     "showBrand": true,
@@ -2213,5 +2213,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-12T09:51:27"
+  "sourceVersion": "roster-2026-11-12T09:51:42"
 }
