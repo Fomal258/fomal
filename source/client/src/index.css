@@ -6148,3 +6148,242 @@ textarea:focus-visible,
     filter: grayscale(18%);
   }
 }
+
+
+/* ════════════════════════════════════════════════════════════
+   UNSLOP PASS — 크롬은 조용하게, 색은 카드의 순간에만
+   ------------------------------------------------------------
+   · 크롬(헤더·툴바·칩·버튼)은 뉴트럴 램프 + 액센트 1회
+   · 타입은 4단계, 자간은 과하지 않게
+   · 글로우·중복 그림자·장식 그라데이션 제거
+   · 라운드는 4px 계열로 통일 (알파벳 칩만 pill)
+   ════════════════════════════════════════════════════════════ */
+:root {
+  --ink: #0b0b0c;
+  --surface: #131315;
+  --raised: #1b1b1e;
+  --hairline: rgba(255, 255, 255, .10);
+  --text: #f2f2f3;
+  --text-2: #b6b6bb;
+  --muted: #8b8b92;
+  --step-1: 11px;
+  --step-2: 12.5px;
+  --step-3: 14px;
+  --step-4: 18px;
+}
+
+/* 표면: 한 램프로 통일 (라이트 테마 잔재 제거) */
+body,
+.site-shell { background: var(--ink); }
+.site-header,
+.roster-section,
+.roster-toolbar { background-color: var(--ink); }
+
+/* 타입: 4단계 + 두 웨이트 */
+.hero-eyebrow,
+.overline,
+.brand-type small,
+.under-grid,
+.roster-note {
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+.header-edit,
+.main-nav a,
+.sort-control select,
+.alpha-chip,
+.tab-active {
+  font-size: var(--step-2);
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+.section-heading p { font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--text-2); }
+.hero h1 {
+  font-size: clamp(44px, 4.6vw, 68px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+}
+.section-heading h2 { font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+.hero h1 em,
+.section-heading h2 span { color: var(--brand-accent, #d61a30); }
+
+/* 크롬의 색: 액센트는 한 번 */
+.count {
+  background: transparent !important;
+  color: var(--text-2) !important;
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  padding: 2px 6px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--step-1);
+}
+.tab-active { color: var(--text); }
+.alpha-chip { border-radius: 3px; color: var(--text-2); }
+.alpha-chip:disabled { color: #5f5f66; opacity: 1; }
+.alpha-chip.is-active {
+  color: #fff;
+  background: var(--brand-accent, #d61a30);
+  border-color: transparent;
+}
+.add-card {
+  background: var(--surface) !important;
+  border: 1px dashed var(--hairline);
+  border-radius: 4px;
+  color: var(--text-2) !important;
+}
+.add-card strong { color: var(--text); }
+.add-card small { color: var(--muted); }
+.under-grid,
+.under-grid p,
+.roster-note,
+.roster-note span { color: var(--text-2) !important; font-size: 12.5px; }
+.under-grid p,
+.roster-note .desktop-note { color: var(--muted) !important; }
+.under-grid i { background-color: var(--brand-accent, #d61a30); }
+
+/* 효과: 글로우·중복 그림자 정리, 장식 그라데이션은 헤어라인으로 */
+.hero.hero-has-strips .hero-content,
+.hero.hero-has-strips h1,
+.hero-film-caption { text-shadow: none !important; }
+.roster-section::before {
+  background: var(--hairline) !important;
+  height: 1px !important;
+  opacity: 1 !important;
+}
+.roster-toolbar .toolbar-left::after {
+  background: var(--hairline) !important;
+  height: 1px !important;
+}
+.card-shell:hover .card-image {
+  box-shadow: 0 0 0 1px var(--hairline), 0 10px 24px rgba(0, 0, 0, .28) !important;
+}
+.info-modal,
+.editor-modal,
+.design-modal,
+.site-hub-modal {
+  border-radius: 6px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .45);
+}
+
+/* 라운드: 4px 계열로 통일 */
+.header-edit,
+.card-edit,
+.favorite-button,
+.columns-control,
+.search-box,
+.editor-modal input,
+.gh-sync-modal input,
+.design-modal input,
+.search-suggestions,
+.link-pop,
+.card-image,
+.wrestler-card { border-radius: 4px; }
+
+/* 빈 상태가 큰 빈 띠로 보이지 않게 */
+.roster-section { min-height: 0; }
+.empty-state { padding: 56px 0; color: var(--text-2); }
+
+/* ════════════════════════════════════════════════════════════
+   UNSLOP PASS — 모바일
+   ------------------------------------------------------------
+   · 첫 화면에서 카드가 바로 보이도록 헤더·히어로·툴바 압축
+   · 명판(카드 이름) 크기를 모바일에 맞게 (19px → 12.5px)
+   · 알파벳 필터는 한 줄 가로 스크롤
+   · 팝업은 하단 시트로
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 820px) {
+  /* 헤더: 한 줄 높이로 압축, 액션 버튼은 가로 스크롤 */
+  .site-header { height: auto !important; }
+  .header-inner {
+    min-height: 56px;
+    padding: 8px 14px !important;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .header-inner > div:last-child,
+  .header-actions {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .header-inner > div:last-child::-webkit-scrollbar { display: none; }
+  .main-nav { display: none; }
+
+  /* 히어로: 브랜드만 남기고 높이 축소 */
+  .hero { min-height: 120px !important; }
+  .hero-content { padding: 14px 0 !important; }
+  .hero h1 { font-size: 34px !important; line-height: 1.04 !important; }
+  .hero-film-caption { display: none; }
+  .hero-eyebrow { font-size: 10px; letter-spacing: .14em; }
+
+  /* 섹션·툴바 밀도 */
+  .roster-section { padding: 18px 0 40px !important; }
+  .section-heading { margin-bottom: 10px !important; }
+  .section-heading h2 { font-size: 24px !important; }
+  .section-heading p { display: none; }
+  .roster-toolbar { min-height: 0 !important; gap: 8px !important; padding-bottom: 6px !important; }
+  .toolbar-left { min-height: 40px !important; width: 100%; }
+  .toolbar-right { padding-top: 6px !important; gap: 8px; }
+
+  /* 알파벳 필터: 한 줄 가로 스크롤 */
+  .alpha-filter {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px !important;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .alpha-filter::-webkit-scrollbar { display: none; }
+  .alpha-label { display: none; }
+  .alpha-chip {
+    flex: 0 0 auto;
+    min-width: 44px;
+    height: 40px;
+    font-size: 12.5px;
+  }
+
+  /* 명판: 모바일에서 19px는 과하다 → 12.5px */
+  .tc-shell .tc-name-text { font-size: 12.5px !important; letter-spacing: .04em; }
+  .tc-shell .tc-name-text.is-long { font-size: 11.5px !important; }
+  .tc-shell .tc-name-text.is-xlong { font-size: 10.5px !important; }
+  .card-caption { padding: 6px 8px; }
+
+  /* 카드 위 아이콘: 누르는 영역 확보 */
+  .card-edit,
+  .favorite-button { width: 40px !important; height: 40px !important; }
+
+  /* 팝업: 하단 시트로 */
+  .editor-modal,
+  .design-modal,
+  .site-hub-modal,
+  .gh-sync-modal {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92vh;
+    overflow-y: auto;
+    margin: 0 !important;
+    border-radius: 12px 12px 0 0 !important;
+  }
+  .editor-modal input,
+  .design-modal input,
+  .gh-sync-modal input { font-size: 16px; }
+
+  /* 팝업 닫기 버튼도 44px 확보 */
+  .info-modal .info-header button,
+  .editor-modal .editor-header button,
+  .design-modal .design-header button,
+  .site-hub-modal .site-hub-header button,
+  .gh-sync-modal .editor-header button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

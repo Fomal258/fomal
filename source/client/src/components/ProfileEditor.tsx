@@ -285,7 +285,7 @@ export default function ProfileEditor({ wrestler, design, onSave, onClose, onDel
               </button>
             </div>
             <p className="editor-hint">
-              💡 <code>photos/</code> 폴더에 <strong>선수 이름.jpg</strong> (또는 .png, .webp) 파일을 넣으면 별도 작업 없이 카드와 프로필에 자동 연동됩니다!
+              <code>photos/</code> 폴더에 <strong>선수 이름.jpg</strong> (또는 .png, .webp) 파일을 넣으면 별도 작업 없이 카드와 프로필에 자동 연동됩니다!
             </p>
 
             <button className="editor-photo-refresh" type="button" onClick={loadPhotoIndex}>
