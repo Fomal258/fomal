@@ -6204,7 +6204,7 @@ body,
   font-weight: 800;
   letter-spacing: -.02em;
 }
-.section-heading h2 { font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+.section-heading h2 { font-size: clamp(32px, 3vw, 44px); font-weight: 800; letter-spacing: -.02em; color: var(--text); }
 .hero h1 em,
 .section-heading h2 span { color: var(--brand-accent, #d61a30); }
 
@@ -6342,9 +6342,22 @@ body,
   .alpha-chip {
     flex: 0 0 auto;
     min-width: 44px;
-    height: 40px;
+    height: 44px;
     font-size: 12.5px;
   }
+
+  /* 터치 타깃 44px (소스 빌드는 zoom 배율이 1이므로 44px 그대로) */
+  .header-edit,
+  .columns-control button,
+  .search-box input,
+  .sort-control select,
+  .info-actions button,
+  .editor-modal button,
+  .design-modal button,
+  .site-hub-modal button { min-height: 44px; }
+  .columns-control button { min-width: 44px; }
+  .search-box input,
+  .sort-control select { font-size: 16px; }
 
   /* 명판: 모바일에서 19px는 과하다 → 12.5px */
   .tc-shell .tc-name-text { font-size: 12.5px !important; letter-spacing: .04em; }
