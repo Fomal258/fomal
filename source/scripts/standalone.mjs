@@ -26,7 +26,9 @@ html = html.replace(/<link[^>]+rel="modulepreload"[^>]*>/g, "");
 
 // 3) body 끝에 인라인 스크립트 삽입
 if (inlineJs) {
-  html = html.replace(/<\/body>/i, `  <script>\n${inlineJs}\n  </script>\n</body>`);
+  // 바꿀 때 함수를 써야 합니다. 문자열로 넘기면 JS 코드 안의 $&, $` 같은
+  // 치환 문자가 그대로 해석되어 번들이 깨집니다.
+  html = html.replace(/<\/body>/i, () => `  <script>\n${inlineJs}\n  </script>\n</body>`);
 }
 
 fs.writeFileSync(indexPath, html, "utf8");

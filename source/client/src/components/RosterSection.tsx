@@ -3,6 +3,7 @@ import { ChevronDown, Grid2X2, Heart, ImagePlus, Minus, Pencil, Plus, RotateCw, 
 import type { SiteDesign } from "@/lib/design";
 import { hasPhotoIndex, imageOf, probePhoto } from "@/data/photos";
 import { cropTransform, displayName, linkLabel, wrestlerLinks, wrestlerNames, type RosterState, type SortOrder, type Wrestler } from "@/lib/storage";
+import { readRosterUrl, writeRosterUrl } from "@/lib/urlState";
 
 type Props = {
   design: SiteDesign;
@@ -249,6 +250,9 @@ function Card({
               src={photo || autoPhoto}
               alt={`${name} 프로필`}
               loading={index > 6 ? "lazy" : "eager"}
+              decoding="async"
+              fetchPriority={index > 6 ? "low" : "high"}
+              draggable={false}
               onError={() => setFailed(true)}
             />
           </div>
@@ -378,13 +382,14 @@ export default function RosterSection(props: Props) {
   const { design, roster, visibleColumns, ready, loadFailed, storageError, manageMode, editable } = props;
 
   // 검색어와 자동완성 목록은 이 컴포넌트 안에서만 씁니다.
-  const [query, setQuery] = useState("");
+  // 처음 값은 주소(?q=&letter=)에서 읽어, 공유한 화면이 그대로 열리게 합니다.
+  const [query, setQuery] = useState(() => readRosterUrl().q);
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   // 링크가 2개 이상인 카드를 눌렀을 때 뜨는 작은 선택 팝업
   const [picker, setPicker] = useState<Picker | null>(null);
   // 이름 첫 글자 필터 ("all" | "#" | "A".."Z" | "기타")
-  const [letter, setLetter] = useState("all");
+  const [letter, setLetter] = useState(() => readRosterUrl().letter);
   const revealRef = useRevealRef(); // 카드 스크롤 등장
   const [motionTick, setMotionTick] = useState(0); // 필터가 바뀔 때마다 카드 등장 모션 재생
   const [stuck, setStuck] = useState(false); // 툴바가 상단에 붙었는지
@@ -434,6 +439,23 @@ export default function RosterSection(props: Props) {
     acc[key] = (acc[key] ?? 0) + 1;
     return acc;
   }, {});
+
+  // 검색어·첫 글자·정렬·열 수를 주소에 반영합니다. (새로고침·공유해도 같은 화면)
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      writeRosterUrl({ q: query.trim(), letter, sort: roster.sortOrder, cols: roster.columns });
+    }, 200);
+    return () => window.clearTimeout(timer);
+  }, [query, letter, roster.sortOrder, roster.columns]);
+
+  // 필터가 하나라도 걸려 있으면 초기화 버튼을 보여줍니다.
+  const filtersActive = query.trim() !== "" || letter !== "all" || roster.sortOrder !== "default";
+  const resetFilters = () => {
+    setQuery("");
+    setOpen(false);
+    setLetter("all");
+    props.onSort("default");
+  };
 
   // 랜덤을 고를 때마다 새 순서로 섞습니다.
   useEffect(() => {
@@ -505,6 +527,18 @@ export default function RosterSection(props: Props) {
       style={{ backgroundColor: design.rosterBg }}
     >
       <div className="section-inner">
+        {/* 인쇄(PDF)에서만 보이는 머리말 */}
+        <div className="print-head">
+          <strong>RING ROSTER</strong>
+          <span>
+            전체 {roster.wrestlers.length}명 · {new Date().toLocaleDateString("ko-KR")}
+          </span>
+        </div>
+        {/* 화면 낭독기용 결과 알림 */}
+        <p className="sr-only" aria-live="polite">
+          {ready ? `${filtered.length}명 표시 중` : "로스터를 불러오는 중"}
+        </p>
+
         {/* 섹션 제목 */}
         <div className="section-heading">
           <div>
@@ -595,6 +629,13 @@ export default function RosterSection(props: Props) {
                 </div>
               )}
             </div>
+
+            {filtersActive && (
+              <button type="button" className="filter-reset" onClick={resetFilters}>
+                <RotateCw size={13} />
+                <span>초기화</span>
+              </button>
+            )}
 
             {/* 열 수 조절 (3 ~ 9) */}
             <div className="columns-control" aria-label="한 줄에 표시할 선수 수">

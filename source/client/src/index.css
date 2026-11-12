@@ -5948,3 +5948,203 @@ a {
   border-left-color: #ef4444;
   color: #991b1b;
 }
+
+
+/* ────────────────────────────────────────────────────────────
+   접근성 · 인쇄 (a11y / print)
+   ──────────────────────────────────────────────────────────── */
+
+/* 본문 바로가기 링크 (Tab 을 처음 눌렀을 때만 보입니다) */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 160ms ease;
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* 화면에는 숨기고 화면 낭독기에만 읽히는 글자 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 키보드 포커스는 항상 보이게 (마우스 클릭에는 나오지 않음) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--brand-accent, #d4af37);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 필터 초기화 버튼 */
+.filter-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--roster-text, #ededed);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+.filter-reset:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+/* 인쇄용 머리말은 화면에서 숨깁니다 */
+.print-head { display: none; }
+
+/* 모션을 줄이도록 설정한 사용자에게는 틸트/등장 모션을 끕니다 */
+@media (prefers-reduced-motion: reduce) {
+  .card-shell,
+  .card-shell:hover,
+  .wrestler-card,
+  .tc-holo-glare,
+  .roster-grid.motion .card-shell,
+  .roster-grid.reveal-on .card-shell {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── 인쇄 / PDF 저장 ─────────────────────────────────────────
+   헤더·툴바·버튼을 걷어내고 카드 그리드를 종이에 맞는 4열 표로 출력합니다. */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 14mm 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  .site-header,
+  .hero-section,
+  .roster-toolbar,
+  .roster-note,
+  .under-grid,
+  .add-card,
+  .back-to-top,
+  .skip-link,
+  .info-backdrop,
+  .editor-backdrop,
+  .design-backdrop,
+  .site-hub-backdrop,
+  .link-pop,
+  .link-pop-backdrop,
+  .card-edit,
+  .favorite-button,
+  .tc-holo-glare,
+  .card-arrow,
+  .sr-only {
+    display: none !important;
+  }
+
+  .print-head {
+    display: flex !important;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 0 0 10mm;
+    padding-bottom: 3mm;
+    border-bottom: 1px solid #d8d8d8;
+    color: #111111;
+    font-size: 11pt;
+  }
+  .print-head strong {
+    font-size: 14pt;
+    letter-spacing: 0.08em;
+  }
+
+  .site-shell,
+  .roster-section,
+  .section-inner {
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  .section-heading h2,
+  .section-heading p,
+  .overline {
+    color: #111111 !important;
+    margin: 0 0 6mm !important;
+  }
+  .section-heading h2 {
+    font-size: 20pt;
+  }
+
+  .roster-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 6mm !important;
+  }
+
+  .card-shell {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .wrestler-card,
+  .card-image {
+    border: 1px solid #dcdcdc !important;
+    border-radius: 4px !important;
+    background: #ffffff !important;
+  }
+  .card-caption,
+  .tc-nameplate {
+    background: #ffffff !important;
+    border-top: 1px solid #e4e4e4 !important;
+  }
+  .tc-name-text {
+    color: #111111 !important;
+    font-size: 9pt !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .silhouette-poster {
+    background: #f4f4f4 !important;
+  }
+  .silhouette-watermark {
+    color: #cfcfcf !important;
+  }
+  .card-image img {
+    filter: grayscale(18%);
+  }
+}

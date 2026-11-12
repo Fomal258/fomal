@@ -4,6 +4,7 @@ import ListRows from "@/components/ListRows";
 import { bundledPhotos, findPhotoFile, photoPath, probePhoto } from "@/data/photos";
 import type { SiteDesign } from "@/lib/design";
 import { defaultCrop, wrestlerLinks, wrestlerNames, type ImageCrop, type Wrestler } from "@/lib/storage";
+import { useDialogFocus } from "@/lib/a11y";
 
 type Props = {
   wrestler?: Wrestler | null; // null이면 "새 선수 추가"
@@ -175,6 +176,9 @@ export default function ProfileEditor({ wrestler, design, onSave, onClose, onDel
     }
   };
 
+  const modalRef = useRef<HTMLFormElement | null>(null);
+  useDialogFocus(modalRef);
+
   return (
     <div
       className="editor-backdrop"
@@ -184,6 +188,7 @@ export default function ProfileEditor({ wrestler, design, onSave, onClose, onDel
       }}
     >
       <form
+        ref={modalRef}
         className="editor-modal"
         style={
           {

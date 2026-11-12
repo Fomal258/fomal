@@ -11,17 +11,22 @@ import { defaultWrestlers, ROSTER_VERSION } from "@/data/roster";
 import { defaultSiteCategories, defaultSites, type SiteCategoryItem, type SiteItem } from "@/data/sites";
 import { defaultDesign, normalizeDesign, type SiteDesign } from "@/lib/design";
 import { displayName, loadRoster, saveRoster, uploadRosterImage, wrestlerNames, type RosterState, type Wrestler } from "@/lib/storage";
+import { profileSlug, readRosterUrl, wrestlerBySlug, writeRosterUrl } from "@/lib/urlState";
 
-// 처음 화면에 보여줄 기본 상태 (명단 129명 + 기본 디자인 + 기본 외부 사이트/카테고리)
-const initialState: RosterState = {
-  wrestlers: defaultWrestlers,
-  columns: 7,
-  sortOrder: "default",
-  design: defaultDesign,
-  sites: defaultSites,
-  siteCategories: defaultSiteCategories,
-  sourceVersion: ROSTER_VERSION,
-};
+// 처음 화면에 보여줄 기본 상태 (명단 + 기본 디자인 + 기본 외부 사이트/카테고리).
+// 주소에 sort/cols 가 있으면 그 값으로 시작해 공유한 화면과 같은 상태로 열립니다.
+function makeInitialState(): RosterState {
+  const fromUrl = readRosterUrl();
+  return {
+    wrestlers: defaultWrestlers,
+    columns: fromUrl.cols ?? 7,
+    sortOrder: fromUrl.sort ?? "default",
+    design: defaultDesign,
+    sites: defaultSites,
+    siteCategories: defaultSiteCategories,
+    sourceVersion: ROSTER_VERSION,
+  };
+}
 
 // 저장된 메뉴에 SITE가 없으면 자동으로 추가해 줍니다.
 function ensureSiteNav(design: SiteDesign): SiteDesign {
@@ -47,7 +52,7 @@ function useResponsiveColumns(columns: number) {
 
 export default function Home() {
   // ── 화면 상태 ────────────────────────────────────────────────
-  const [roster, setRoster] = useState<RosterState>(initialState);
+  const [roster, setRoster] = useState<RosterState>(makeInitialState);
   const [ready, setReady] = useState(false); // 저장된 로스터를 다 읽었는지
   const [loadFailed, setLoadFailed] = useState(false);
   const [storageError, setStorageError] = useState(false);
@@ -100,6 +105,33 @@ export default function Home() {
       cancelled = true;
     };
   }, []);
+
+  // ── 주소(딥링크) ↔ 프로필 팝업 ───────────────────────────────
+  // ?p=선수이름 으로 들어오면 그 선수 정보를 바로 열고, 팝업을 닫으면 주소에서 지웁니다.
+  const openedFromUrl = useRef(false);
+  useEffect(() => {
+    if (!ready || openedFromUrl.current) return;
+    openedFromUrl.current = true;
+    const slug = readRosterUrl().profile;
+    if (!slug) return;
+    const found = wrestlerBySlug(roster.wrestlers, slug);
+    if (found) setInfo(found);
+  }, [ready, roster.wrestlers]);
+
+  useEffect(() => {
+    if (!ready) return;
+    writeRosterUrl({ p: info ? profileSlug(info) : null });
+  }, [info, ready]);
+
+  // 브라우저 뒤로/앞으로 가기로도 팝업이 따라 움직입니다.
+  useEffect(() => {
+    const onPopState = () => {
+      const slug = readRosterUrl().profile;
+      setInfo(slug ? wrestlerBySlug(roster.wrestlers, slug) : null);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [roster.wrestlers]);
 
   // ── 저장하기 (상태가 바뀔 때마다) ────────────────────────────
   useEffect(() => {
@@ -194,6 +226,9 @@ export default function Home() {
 
   return (
     <div id="top" className="site-shell" style={cssVars}>
+      <a className="skip-link" href="#roster">
+        본문으로 건너뛰기
+      </a>
       {design.showHeader && (
         <SiteHeader
           design={design}

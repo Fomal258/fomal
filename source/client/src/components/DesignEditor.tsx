@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import { defaultDesign, type HeroBlock, type SiteDesign } from "@/lib/design";
+import { useDialogFocus } from "@/lib/a11y";
 
 // "디자인 편집" 팝업. 화면의 입력칸과 SiteDesign 필드가 1:1로 대응합니다.
 
@@ -218,6 +219,9 @@ export default function DesignEditor({ design, onSave, onClose }: { design: Site
   };
 
   // 저장 전 검사: 색상 → 메뉴 링크 → 버튼 링크 → 빈 문구
+  const modalRef = useRef<HTMLFormElement | null>(null);
+  useDialogFocus(modalRef);
+
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (reading) return;
@@ -252,7 +256,7 @@ export default function DesignEditor({ design, onSave, onClose }: { design: Site
 
   return (
     <div className="design-backdrop" role="presentation" onMouseDown={event => event.target === event.currentTarget && onClose()}>
-      <form className="design-modal" role="dialog" aria-modal="true" aria-labelledby="design-editor-title" onSubmit={onSubmit} onMouseDown={event => event.stopPropagation()}>
+      <form ref={modalRef} className="design-modal" role="dialog" aria-modal="true" aria-labelledby="design-editor-title" onSubmit={onSubmit} onMouseDown={event => event.stopPropagation()}>
         <header className="design-header">
           <div>
             <p className="design-kicker">SITE DESIGN</p>
