@@ -6193,6 +6193,9 @@ body, .site-shell { background: var(--ink); }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 </style>
+
+
+
 </head>
   <body>
     <div id="root"></div>
@@ -8208,5 +8211,118 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
 })();
 </script>
 
+
+<script id="a11y-pass">
+(function () {
+  if (window.__a11yPass) return;
+  window.__a11yPass = true;
+
+  var SELECTOR = ".info-modal, .editor-modal, .design-modal, .site-hub-modal, .gh-sync-modal";
+  var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  var current = null;
+  var previous = null;
+
+  function visible(root) {
+    var all = root.querySelectorAll(FOCUSABLE);
+    return Array.prototype.filter.call(all, function (el) {
+      return el.getClientRects().length > 0 && !el.hasAttribute("aria-hidden");
+    });
+  }
+
+  function open(el) {
+    previous = document.activeElement;
+    current = el;
+    if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+    var first = visible(el)[0] || el;
+    first.focus({ preventScroll: true });
+  }
+
+  function close() {
+    current = null;
+    if (previous && previous.focus) previous.focus({ preventScroll: true });
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (!current || event.key !== "Tab") return;
+    var list = visible(current);
+    if (!list.length) return;
+    var first = list[0], last = list[list.length - 1];
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === current)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }, true);
+
+  new MutationObserver(function () {
+    var el = document.querySelector(SELECTOR);
+    if (el && el !== current) open(el);
+    else if (!el && current) close();
+  }).observe(document.body, { childList: true, subtree: true });
+})();
+</script>
+
+<style id="polish-pass">
+/* ── 폴리시: 당신 디자인 유지, 걸린 것만 ────────────────────── */
+
+/* 1) 명판 높이·자간 통일 → 이름 길이와 무관하게 카드 그리드가 반듯해짐 */
+.card-caption.tc-nameplate {
+  height: 44px !important;
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+}
+.tc-name-text {
+  letter-spacing: .04em !important;
+  line-height: 1.15 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
+}
+.card-caption .card-arrow { flex: 0 0 auto; }
+
+/* 2) 사진 없음·로딩 중 자리표시자 (흰 번쩍임 제거, 브랜드 톤 유지) */
+.card-image { background: #17171a !important; }
+.card-image img { background: #17171a; }
+.silhouette-poster {
+  background:
+    radial-gradient(120% 100% at 50% 0%, #1f1f23 0%, #151517 58%, #101012 100%) !important;
+}
+.silhouette-watermark { color: rgba(255, 255, 255, .07) !important; }
+
+/* 3) 키보드 포커스: 브랜드 레드 링 하나로 통일 */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--brand-accent, #d61a30) !important;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 5) 모바일 카드 아이콘: 보이는 크기는 그대로, 누르는 영역만 44px 이상 */
+.card-edit::after,
+.favorite-button::after {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  border-radius: 50%;
+}
+
+/* 4) 모바일 첫 화면 밀도: 히어로 160→132, 첫 카드 위로 */
+@media (max-width: 820px) {
+  .hero { min-height: 132px !important; }
+  .hero-content { padding: 10px 0 !important; }
+  .hero h1 { font-size: 32px !important; }
+  .roster-section { padding-top: 14px !important; }
+  .section-heading { margin-bottom: 8px !important; }
+  .card-caption.tc-nameplate { height: 40px !important; }
+}
+</style>
 </body>
 </html>
