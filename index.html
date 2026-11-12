@@ -6043,7 +6043,19 @@ body, .site-shell { background: var(--ink); }
   font-size: var(--step-1);
 }
 .tab-active { color: var(--text); }
-.alpha-chip { border-radius: 3px; color: var(--muted); }
+.alpha-chip { border-radius: 3px; color: var(--text-2); }
+.alpha-chip:disabled { color: #5f5f66; opacity: 1; }
+.roster-section::before {
+  background: var(--hairline) !important;
+  height: 1px !important;
+  opacity: 1 !important;
+}
+.under-grid, .under-grid p, .roster-note, .roster-note span {
+  color: var(--text-2) !important;
+  font-size: 12.5px;
+}
+.under-grid p { color: var(--muted) !important; }
+.roster-note .desktop-note { color: var(--muted) !important; }
 .alpha-chip.is-active {
   color: #fff;
   background: var(--brand-accent, #d61a30);
