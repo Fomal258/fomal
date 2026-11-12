@@ -6171,13 +6171,14 @@ body, .site-shell { background: var(--ink); }
   .info-modal { max-height: 92vh; overflow-y: auto; }
 
   /* 팝업 닫기 버튼도 44px 확보 */
+  /* zoom 0.95 보정: 48px → 실효 45.6px */
   .info-modal .info-header button,
   .editor-modal .editor-header button,
   .design-modal .design-header button,
   .site-hub-modal .site-hub-header button,
   .gh-sync-modal .editor-header button {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 48px;
+    min-height: 48px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
