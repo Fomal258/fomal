@@ -2096,11 +2096,12 @@
       "links": [
         "https://www.youtube.com/results?search_query=Jake+Painter"
       ],
-      "createdAt": 1794477457801
+      "createdAt": 1794477457801,
+      "favorite": true
     }
   ],
   "columns": 3,
-  "sortOrder": "random",
+  "sortOrder": "favorites",
   "design": {
     "showHeader": true,
     "showBrand": true,
@@ -2236,5 +2237,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-12T09:57:39"
+  "sourceVersion": "roster-2026-11-12T09:57:46"
 }
