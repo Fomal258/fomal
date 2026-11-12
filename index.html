@@ -5985,7 +5985,113 @@ a {
   .gh-sync-modal .editor-field input { min-height: 48px; font-size: 16px; }
 }
 </style>
-  </head>
+  
+<style id="unslop-pass">
+/* ────────────────────────────────────────────────────────────
+   unslop 정리 패스 — 크롬은 조용하게, 색은 카드의 순간에만
+   ──────────────────────────────────────────────────────────── */
+:root {
+  --ink: #0b0b0c;
+  --surface: #131315;
+  --raised: #1b1b1e;
+  --hairline: rgba(255, 255, 255, .10);
+  --text: #f2f2f3;
+  --text-2: #b6b6bb;
+  --muted: #8b8b92;
+  --step-1: 11px;
+  --step-2: 12.5px;
+  --step-3: 14px;
+  --step-4: 18px;
+}
+
+/* 1) 표면: 한 램프로 통일 (라이트 테마 잔재 제거) */
+body, .site-shell { background: var(--ink); }
+.site-header { background: var(--ink); }
+.roster-section { background: var(--ink); }
+.roster-toolbar { background: var(--ink); }
+
+/* 2) 타입: 4단계 + 두 웨이트, 과한 트래킹 제거 */
+.hero-eyebrow, .overline, .brand-type small, .under-grid, .roster-note {
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+.header-edit, .main-nav a, .sort-control select, .alpha-chip, .tab-active {
+  font-size: var(--step-2);
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+.section-heading p { font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--text-2); }
+.hero h1 {
+  font-size: clamp(44px, 4.6vw, 68px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  text-shadow: 0 6px 24px rgba(0, 0, 0, .55);
+}
+.section-heading h2 { font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+.hero h1 em, .section-heading h2 span { color: var(--brand-accent, #d61a30); }
+
+/* 3) 크롬의 색: 액센트는 한 번, 나머지는 뉴트럴 */
+.count {
+  background: transparent !important;
+  color: var(--text-2) !important;
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  padding: 2px 6px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--step-1);
+}
+.tab-active { color: var(--text); }
+.alpha-chip { border-radius: 3px; color: var(--muted); }
+.alpha-chip.is-active {
+  color: #fff;
+  background: var(--brand-accent, #d61a30);
+  border-color: transparent;
+}
+.add-card {
+  background: var(--surface) !important;
+  border: 1px dashed var(--hairline);
+  border-radius: 4px;
+  color: var(--text-2) !important;
+}
+.add-card strong { color: var(--text); }
+.add-card small { color: var(--muted); }
+.under-grid { color: var(--muted); }
+.under-grid i { background-color: var(--brand-accent, #d61a30); }
+
+/* 4) 효과: 글로우·이중 그림자 정리 */
+.hero.hero-has-strips .hero-content,
+.hero.hero-has-strips h1,
+.hero-film-caption { text-shadow: none !important; }
+.hero h1 { text-shadow: 0 6px 24px rgba(0, 0, 0, .55) !important; }
+.hero::after { background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.72)) !important; }
+.card-shell:hover .card-image {
+  box-shadow: 0 0 0 1px var(--hairline), 0 10px 24px rgba(0, 0, 0, .28) !important;
+}
+.info-modal, .editor-modal, .design-modal, .site-hub-modal {
+  border-radius: 6px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .45);
+}
+
+/* 5) 라운드: 4px 계열로 통일 (칩만 pill 유지) */
+.header-edit, .card-edit, .favorite-button, .columns-control, .search-box,
+.editor-modal input, .gh-sync-modal input, .design-modal input,
+.search-suggestions, .link-pop { border-radius: 4px; }
+.card-image, .wrestler-card { border-radius: 4px; }
+
+/* 5b) 빈 상태가 큰 빈 띠로 보이지 않게 */
+.roster-section { min-height: 0 !important; }
+.empty-state { padding: 56px 0; color: var(--text-2); }
+
+/* 6) 모션: 목적 없는 반복 모션 정리 */
+*, *::before, *::after { animation-duration: .28s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
   <body>
     <div id="root"></div>
     <script>
@@ -7886,7 +7992,6 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
 
   function buildPanel(form) {
     if (form.querySelector(".gh-quick")) return;
-
     var panel = document.createElement("div");
     panel.className = "gh-quick";
     panel.innerHTML =
@@ -7902,6 +8007,7 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
       status.textContent = text;
       status.className = "gh-quick-status " + (ok === true ? "ok" : ok === false ? "bad" : "");
     }
+    function repoSlug(g) { return encodeURIComponent(g.owner) + "/" + encodeURIComponent(g.repo); }
 
     panel.addEventListener("click", async function (event) {
       var btn = event.target.closest("button[data-q]");
@@ -7912,33 +8018,28 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
       if (key === "fill") {
         var g = guessRepo();
         var okAll = [
-          setValue(f.owner, g.owner),
-          setValue(f.repo, g.repo),
-          setValue(f.branch, "main"),
-          setValue(f.path, "roster-data.json")
+          setValue(f.owner, g.owner), setValue(f.repo, g.repo),
+          setValue(f.branch, "main"), setValue(f.path, "roster-data.json")
         ].every(Boolean);
         say(okAll ? "저장소: " + g.owner + " / " + g.repo + " · main · roster-data.json" : "입력칸을 찾지 못했습니다.", okAll);
         return;
       }
-
       if (key === "token") {
         window.open("https://github.com/settings/tokens/new?scopes=repo&description=" + encodeURIComponent("Ring Roster sync"), "_blank", "noopener");
-        say("새 창에서 repo 권한만 체크하고 발급하세요. 발급된 값을 복사해 오세요.");
+        say("새 창에서 repo 권한만 체크하고 발급하세요.");
         return;
       }
-
       if (key === "paste") {
         try {
           var text = (await navigator.clipboard.readText() || "").trim();
           if (!text) { say("클립보드가 비어 있습니다.", false); return; }
           setValue(f.token, text);
-          say("토큰 칸에 붙여넣었습니다. 아래 [토큰 확인]을 눌러 검증하세요.", true);
+          say("토큰 칸에 붙여넣었습니다. [토큰 확인]을 눌러 검증하세요.", true);
         } catch (e) {
           say("브라우저가 붙여넣기를 막았습니다. 토큰 칸을 길게 눌러 직접 붙여넣어 주세요.", false);
         }
         return;
       }
-
       if (key === "check") {
         var token = (f.token && f.token.value || "").trim();
         if (!token) { say("먼저 토큰을 입력해 주세요.", false); return; }
@@ -7949,15 +8050,13 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
           if (!res.ok) { say("토큰이 유효하지 않습니다 (HTTP " + res.status + ").", false); return; }
           var me = await res.json();
           var g2 = guessRepo();
-          var repoRes = await fetch("https://api.github.com/repos/" + g3safe(g2), { headers: headers });
-          var note = "";
+          var repoRes = await fetch("https://api.github.com/repos/" + repoSlug(g2), { headers: headers });
           if (repoRes.ok) {
             var rj = await repoRes.json();
             var canWrite = Boolean(rj.permissions && rj.permissions.push);
-            note = canWrite ? " · 저장소 쓰기 가능" : " · 쓰기 권한 없음(Contents: Read and write 필요)";
-            say("연결됨: @" + me.login + note, canWrite);
+            say("연결됨: @" + me.login + (canWrite ? " · 저장소 쓰기 가능" : " · 쓰기 권한 없음(Contents: Read and write 필요)"), canWrite);
           } else {
-            say("연결됨: @" + me.login + " (저장소 " + g2.owner + "/" + g2.repo + " 확인 실패)", false);
+            say("연결됨: @" + me.login + " (저장소 확인 실패)", false);
           }
         } catch (e) {
           say("확인 실패: 네트워크 오류입니다.", false);
@@ -7965,18 +8064,45 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
       }
     });
 
-    function g3safe(g) { return encodeURIComponent(g.owner) + "/" + encodeURIComponent(g.repo); }
-
     var guide = form.querySelector(".gh-sync-guide");
     if (guide && guide.parentNode) guide.parentNode.insertBefore(panel, guide);
     else (form.querySelector(".editor-body") || form).prepend(panel);
   }
 
-  var observer = new MutationObserver(function () {
+  new MutationObserver(function () {
     var form = document.querySelector(".gh-sync-modal");
     if (form) buildPanel(form);
-  });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
+
+
+<script id="unslop-emoji">
+(function () {
+  var EMOJI = /[\u{1F300}-\u{1FAFF}\u2705\u274C\u2B50\uFE0F]/u;
+  function clean() {
+    var els = document.querySelectorAll("button, a, strong, span, li, p, h1, h2, h3, label");
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el.children.length || !el.firstChild || el.firstChild.nodeType !== 3) continue;
+      var t = el.textContent || "";
+      if (!EMOJI.test(t)) continue;
+      var next = t.replace(/[\u{1F300}-\u{1FAFF}\u2705\u274C]/gu, "").replace(/\s{2,}/g, " ").trim();
+      if (next) el.textContent = next;
+      else el.textContent = t.replace(/[\u{1F300}-\u{1FAFF}\u2705\u274C]/gu, "").trim() || el.textContent;
+    }
+  }
+  function start() {
+    clean();
+    var pending = false;
+    new MutationObserver(function () {
+      if (pending) return;
+      pending = true;
+      setTimeout(function () { pending = false; clean(); }, 120);
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
 })();
 </script>
 
