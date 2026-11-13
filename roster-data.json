@@ -1969,7 +1969,7 @@
     }
   ],
   "columns": 5,
-  "sortOrder": "favorites",
+  "sortOrder": "default",
   "design": {
     "showHeader": true,
     "showBrand": true,
@@ -2105,5 +2105,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-06"
+  "sourceVersion": "roster-2026-11-13T10:53:51"
 }
