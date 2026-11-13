@@ -7966,11 +7966,13 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
     return name.trim().toLowerCase().replace(/[.']/g, "").replace(/[^a-z0-9가-힣]+/g, "-").replace(/^-|-$/g, "");
   }
 
+  // 후보를 2개로 제한: 정확한 이름 → 슬러그 (404 요청 최소화)
   function candidates(name) {
-    var bases = [name, name.replace(/\./g, ""), slug(name), name.toLowerCase(), name.replace(/\s+/g, "_")];
+    var bases = [name.trim(), slug(name)];
     var out = [];
     bases.forEach(function (b) {
-      EXTS.forEach(function (e) { out.push("photos/" + encodeURIComponent(b + "." + e)); });
+      if (!b) return;
+      out.push("photos/" + encodeURIComponent(b + ".jpg"));
     });
     return out;
   }
@@ -8001,7 +8003,7 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
     img.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%;";
     if (poster && poster.parentNode) {
       poster.parentNode.insertBefore(img, poster);
-      poster.style.display = "none";
+      poster.remove();
     } else {
       host.appendChild(img);
     }
