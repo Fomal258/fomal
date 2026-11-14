@@ -2084,7 +2084,8 @@
       "links": [
         "https://www.youtube.com/results?search_query=Chris+Masters+vs&sp=EgQIBRAB"
       ],
-      "createdAt": 1794312474344
+      "createdAt": 1794312474344,
+      "favorite": true
     },
     {
       "id": "wrestler-1794469447903",
@@ -2175,7 +2176,7 @@
     }
   ],
   "columns": 6,
-  "sortOrder": "favorites",
+  "sortOrder": "newest",
   "design": {
     "showHeader": true,
     "showBrand": true,
@@ -2311,5 +2312,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:45:37"
+  "sourceVersion": "roster-2026-11-14T02:45:44"
 }
