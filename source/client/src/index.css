@@ -6429,3 +6429,71 @@ a {
   border: 2px solid #60a5fa !important;
   box-shadow: 0 14px 32px rgba(37, 99, 235, .3) !important;
 }
+/* 듀얼 프레임(찜+유망주): 좌측 절반 금색 / 우측 절반 코발트 + 부드러운 호버 전환 */
+html body .tc-shell.is-champ.is-prospect .tc-frame {
+  position: relative;
+  background:
+    radial-gradient(70% 130% at 50% 50%, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 68%),
+    linear-gradient(90deg, rgba(250,204,21,.62) 0 49.4%, rgba(255,255,255,.26) 49.4% 50.6%, rgba(59,130,246,.62) 50.6% 100%),
+    linear-gradient(180deg, #171006 0%, #0c111c 55%, #0a1424 100%) !important;
+  box-shadow:
+    -7px -7px 22px rgba(250,204,21,.30),
+    7px 7px 22px rgba(59,130,246,.34),
+    0 18px 38px rgba(0,0,0,.86),
+    inset 0 0 0 1px rgba(255,255,255,.16) !important;
+  transition:
+    box-shadow 320ms cubic-bezier(.22, 1, .36, 1),
+    filter 320ms cubic-bezier(.22, 1, .36, 1) !important;
+  will-change: box-shadow, filter;
+}
+
+/* 호버 시 밝아지는 오버레이: 그라데이션 스냅 대신 opacity로 부드럽게 */
+html body .tc-shell.is-champ.is-prospect .tc-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(78% 140% at 50% 50%, rgba(255,255,255,.20) 0%, rgba(255,255,255,0) 70%),
+    linear-gradient(90deg, rgba(253,224,71,.42) 0 49.4%, rgba(255,255,255,.20) 49.4% 50.6%, rgba(96,165,250,.42) 50.6% 100%);
+  opacity: 0;
+  transition: opacity 340ms cubic-bezier(.22, 1, .36, 1);
+}
+html body .tc-shell.is-champ.is-prospect:hover .tc-frame::before,
+html body .tc-shell.is-champ.is-prospect:focus-within .tc-frame::before {
+  opacity: 1;
+}
+
+/* 호버 시 글로우 확장 + 미세 채도 (카드 크기는 그대로) */
+html body .tc-shell.is-champ.is-prospect:hover .tc-frame,
+html body .tc-shell.is-champ.is-prospect:focus-within .tc-frame {
+  box-shadow:
+    -12px -12px 34px rgba(250,204,21,.46),
+    12px 12px 34px rgba(59,130,246,.50),
+    0 24px 48px rgba(0,0,0,.9),
+    inset 0 0 0 1px rgba(255,255,255,.26) !important;
+  filter: saturate(1.12) brightness(1.04);
+}
+
+/* 이름도 호버에서 살짝 밝아지도록 전환 부여 */
+html body .tc-shell.is-champ.is-prospect .tc-name-text {
+  background: linear-gradient(100deg, #ffe89e 0%, #ffffff 46%, #dbeafe 64%, #60a5fa 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: #e0f2fe !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  transition: filter 320ms cubic-bezier(.22, 1, .36, 1) !important;
+}
+html body .tc-shell.is-champ.is-prospect:hover .tc-name-text {
+  filter: brightness(1.08) saturate(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .tc-shell.is-champ.is-prospect .tc-frame,
+  html body .tc-shell.is-champ.is-prospect .tc-frame::before,
+  html body .tc-shell.is-champ.is-prospect .tc-name-text {
+    transition: none !important;
+  }
+}
