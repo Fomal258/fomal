@@ -231,7 +231,8 @@
         "x": 1.3,
         "y": 40.9
       },
-      "bio": ""
+      "bio": "",
+      "favorite": true
     },
     {
       "id": "crazzy-steve",
@@ -2313,5 +2314,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:46:18"
+  "sourceVersion": "roster-2026-11-14T02:46:39"
 }
