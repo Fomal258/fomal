@@ -1031,7 +1031,7 @@
         "y": 0
       },
       "bio": "",
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "benjamin-trust",
@@ -1678,7 +1678,7 @@
         "https://www.youtube.com/results?search_query=adam+frost+wrestling&sp=EgIQAQ%253D%253D"
       ],
       "createdAt": 1794041087731,
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "wrestler-1794044294327",
@@ -2311,5 +2311,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T00:38:41"
+  "sourceVersion": "roster-2026-11-14T02:41:51"
 }
