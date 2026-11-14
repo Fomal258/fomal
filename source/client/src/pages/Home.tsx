@@ -14,6 +14,13 @@ import { defaultDesign, normalizeDesign, type SiteDesign } from "@/lib/design";
 import { displayName, loadRoster, saveRoster, uploadRosterImage, wrestlerNames, type RosterState, type Wrestler } from "@/lib/storage";
 import { downloadBackup, fetchRemote, isConfigured, loadGhConfig, pushRemote, saveGhConfig, sigOf, type GhConfig } from "@/lib/githubSync";
 
+
+// 이전에 저장된 로컬 상태에서 유망주 이름을 모읍니다(마이그레이션용, 동기 접근).
+const localProspectCache: { names: string[] } = { names: [] };
+function awaitLocalProspects(): string[] {
+  return localProspectCache.names;
+}
+
 // 처음 화면에 보여줄 기본 상태 (명단 129명 + 기본 디자인 + 기본 외부 사이트/카테고리)
 const initialState: RosterState = {
   wrestlers: defaultWrestlers,
@@ -83,10 +90,26 @@ export default function Home() {
 
     const apply = (saved: RosterState) => {
       // roster-data.json(또는 저장된 상태)이 있으면 그 명단을 그대로 신뢰합니다.
-      // 예전에는 버전이 다르면 기본 명단으로 되돌려, 166명이 129명으로 줄어드는 문제가 있었습니다.
       const wrestlers = saved.wrestlers.length
         ? saved.wrestlers.map(w => ({ ...w, names: wrestlerNames(w) }))
         : defaultWrestlers;
+
+      // ── 유망주 유지: ①이전 레이어(localStorage) ②기존 로컬 저장분 을 합칩니다.
+      const prospectNames = new Set<string>();
+      try {
+        const legacy = JSON.parse(localStorage.getItem("ringRosterProspects") || "[]");
+        if (Array.isArray(legacy)) legacy.forEach((n: string) => n && prospectNames.add(n.trim()));
+      } catch {}
+      try {
+        const prev = awaitLocalProspects();
+        prev.forEach(n => prospectNames.add(n));
+      } catch {}
+      if (prospectNames.size) {
+        wrestlers.forEach((w: Wrestler) => {
+          if (wrestlerNames(w).some(n => prospectNames.has(n.trim()))) w.prospect = true;
+        });
+        try { localStorage.removeItem("ringRosterProspects"); } catch {}
+      }
       setRoster({
         wrestlers,
         columns: Math.max(3, Math.min(9, saved.columns || 7)),
@@ -105,6 +128,10 @@ export default function Home() {
         fetchRemote(cfg).catch(() => null),
         loadRoster().catch(() => null),
       ]);
+      // 로컬에 남아 있는 유망주 목록을 캐시 (원격에 없더라도 유지)
+      localProspectCache.names = (local?.wrestlers || [])
+        .filter((w: Wrestler) => w.prospect)
+        .flatMap((w: Wrestler) => wrestlerNames(w));
       if (cancelled) return;
 
       const remoteSig = remote && Array.isArray(remote.wrestlers) ? sigOf(remote) : "";
