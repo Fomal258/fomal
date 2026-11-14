@@ -67,7 +67,7 @@
         "y": 7.9
       },
       "bio": "",
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "alex-shelley",
@@ -1558,7 +1558,7 @@
         "https://www.youtube.com/results?search_query=Alexander+Berkner+wrestling&sp=EgIQAQ%253D%253D"
       ],
       "createdAt": 1793981055096,
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "wrestler-1793981279520",
@@ -1801,7 +1801,7 @@
         "https://www.youtube.com/results?search_query=alexander+grey+wrestling"
       ],
       "createdAt": 1794107590703,
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "wrestler-1794111145802",
@@ -2311,5 +2311,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:41:51"
+  "sourceVersion": "roster-2026-11-14T02:41:57"
 }
