@@ -452,7 +452,8 @@
       "image": "",
       "links": [
         "https://www.youtube.com/results?search_query=Joel%20Redman%20wrestling%202026&sp=CAI%253D"
-      ]
+      ],
+      "favorite": true
     },
     {
       "id": "john-atlas",
@@ -2314,5 +2315,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:46:39"
+  "sourceVersion": "roster-2026-11-14T02:46:46"
 }
