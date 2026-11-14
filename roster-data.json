@@ -189,8 +189,7 @@
       "image": "",
       "links": [
         "https://www.youtube.com/results?search_query=Chandler%20Hopkins%20wrestling%202026&sp=CAI%253D"
-      ],
-      "favorite": true
+      ]
     },
     {
       "id": "channing-decker",
@@ -478,8 +477,7 @@
         "x": -0.3,
         "y": 23.2
       },
-      "bio": "",
-      "favorite": true
+      "bio": ""
     },
     {
       "id": "jordan-sparkes",
@@ -1354,7 +1352,7 @@
         "y": 4
       },
       "bio": "",
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "nick-strong",
@@ -1698,7 +1696,7 @@
         "https://www.youtube.com/results?search_query=ray+bruce+wrestling"
       ],
       "createdAt": 1794044294327,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794049090159",
@@ -1751,7 +1749,7 @@
         "https://www.youtube.com/results?search_query=Jimmy+Townsend+vs"
       ],
       "createdAt": 1794097405205,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794100041365",
@@ -1803,7 +1801,7 @@
         "https://www.youtube.com/results?search_query=alexander+grey+wrestling"
       ],
       "createdAt": 1794107590703,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794111145802",
@@ -1873,7 +1871,7 @@
         "https://www.youtube.com/results?search_query=tamas+szabo+wrestling"
       ],
       "createdAt": 1794119846688,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794215697776",
@@ -1891,7 +1889,7 @@
         "https://www.youtube.com/results?search_query=Chris+Tyler&sp=EgQIBRAB"
       ],
       "createdAt": 1794215697776,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794215966249",
@@ -1909,7 +1907,7 @@
         "https://www.youtube.com/results?search_query=+Jarett+Diaz&sp=EgQIBRAB"
       ],
       "createdAt": 1794215966250,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794217182847",
@@ -1927,7 +1925,7 @@
         "https://www.youtube.com/results?search_query=Jason+Hotch&sp=EgQIBRAB"
       ],
       "createdAt": 1794217182847,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794219941893",
@@ -1945,7 +1943,7 @@
         "https://www.youtube.com/results?search_query=Thomas+Heim+&sp=EgIQAQ%253D%253D"
       ],
       "createdAt": 1794219941893,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794221097848",
@@ -1998,7 +1996,7 @@
         "https://www.youtube.com/results?search_query=Duke+Fairfax+vs"
       ],
       "createdAt": 1794222560650,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794223682029",
@@ -2016,7 +2014,7 @@
         "https://www.youtube.com/results?search_query=joey+osborne+wrestling"
       ],
       "createdAt": 1794223682029,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794223736642",
@@ -2034,7 +2032,7 @@
         "https://www.youtube.com/results?search_query=Hunter+James+wrestling"
       ],
       "createdAt": 1794223736642,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794228693230",
@@ -2069,7 +2067,7 @@
         "https://www.youtube.com/results?search_query=Wes+Barkley+&sp=EgIQAQ%253D%253D"
       ],
       "createdAt": 1794229745475,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794312474344",
@@ -2156,7 +2154,7 @@
         "https://www.youtube.com/results?search_query=Jake+Painter"
       ],
       "createdAt": 1794477457801,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794565158348",
@@ -2177,7 +2175,7 @@
     }
   ],
   "columns": 6,
-  "sortOrder": "newest",
+  "sortOrder": "favorites",
   "design": {
     "showHeader": true,
     "showBrand": true,
@@ -2313,5 +2311,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:45:13"
+  "sourceVersion": "roster-2026-11-14T02:45:31"
 }
