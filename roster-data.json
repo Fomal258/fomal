@@ -189,7 +189,8 @@
       "image": "",
       "links": [
         "https://www.youtube.com/results?search_query=Chandler%20Hopkins%20wrestling%202026&sp=CAI%253D"
-      ]
+      ],
+      "favorite": true
     },
     {
       "id": "channing-decker",
@@ -2311,5 +2312,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:42:24"
+  "sourceVersion": "roster-2026-11-14T02:45:05"
 }
