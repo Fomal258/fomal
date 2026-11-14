@@ -6574,3 +6574,154 @@ html body .tc-shell.is-champ.is-prospect:hover .tc-name-text {
     transition: none !important;
   }
 }
+/* ── 듀얼 프레임(찜+유망주): 금 → 샴페인 → 백금(42~62%) → 아이스 → 코발트 ── */
+html body .tc-shell.is-champ.is-prospect .tc-frame {
+  position: relative;
+  background:
+    radial-gradient(72% 132% at 50% 46%, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 66%),
+    linear-gradient(118deg,
+      rgba(250, 204, 21, .74) 0%,
+      rgba(255, 232, 158, .56) 20%,
+      rgba(255, 255, 255, .30) 42%,
+      rgba(219, 234, 254, .48) 62%,
+      rgba(96, 165, 250, .68) 82%,
+      rgba(37, 99, 235, .58) 100%),
+    linear-gradient(180deg, #171006 0%, #0c111c 55%, #0a1424 100%) !important;
+  box-shadow:
+    -8px -8px 24px rgba(250, 204, 21, .34),
+    8px 8px 24px rgba(59, 130, 246, .38),
+    0 18px 38px rgba(0, 0, 0, .86),
+    inset 0 0 0 1px rgba(255, 255, 255, .18) !important;
+  transition:
+    box-shadow 400ms cubic-bezier(.22, 1, .36, 1),
+    filter 400ms cubic-bezier(.22, 1, .36, 1),
+    transform 140ms cubic-bezier(.22, 1, .36, 1) !important;
+  will-change: box-shadow, filter, transform;
+  transform-origin: 50% 50%;
+}
+
+/* 호버 레이어 (같은 42~62% 혼합 구간) */
+html body .tc-shell.is-champ.is-prospect .tc-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(80% 142% at 50% 46%, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 68%),
+    linear-gradient(118deg,
+      rgba(253, 224, 71, .52) 0%,
+      rgba(255, 240, 190, .38) 20%,
+      rgba(255, 255, 255, .34) 42%,
+      rgba(230, 242, 255, .40) 62%,
+      rgba(147, 197, 253, .52) 82%,
+      rgba(59, 130, 246, .46) 100%);
+  opacity: 0;
+  transition: opacity 400ms cubic-bezier(.22, 1, .36, 1);
+}
+html body .tc-shell.is-champ.is-prospect:hover .tc-frame::before,
+html body .tc-shell.is-champ.is-prospect:focus-within .tc-frame::before {
+  opacity: 1;
+}
+
+/* 호버: 글로우 알파 0.6 */
+html body .tc-shell.is-champ.is-prospect:hover .tc-frame,
+html body .tc-shell.is-champ.is-prospect:focus-within .tc-frame {
+  box-shadow:
+    -13px -13px 36px rgba(250, 204, 21, .60),
+    13px 13px 36px rgba(59, 130, 246, .60),
+    0 26px 52px rgba(0, 0, 0, .92),
+    inset 0 0 0 1px rgba(255, 255, 255, .30) !important;
+  filter: saturate(1.14) brightness(1.05);
+}
+
+/* 클릭(active): 살짝 눌리는 압축 + 글로우 강화 (짧은 90ms) */
+html body .tc-shell.is-champ.is-prospect:active .tc-frame {
+  transform: scale(.982) !important;
+  transition:
+    box-shadow 90ms cubic-bezier(.22, 1, .36, 1),
+    filter 90ms cubic-bezier(.22, 1, .36, 1),
+    transform 90ms cubic-bezier(.22, 1, .36, 1) !important;
+  box-shadow:
+    -15px -15px 40px rgba(250, 204, 21, .72),
+    15px 15px 40px rgba(59, 130, 246, .72),
+    0 14px 30px rgba(0, 0, 0, .95),
+    inset 0 0 0 1px rgba(255, 255, 255, .38) !important;
+  filter: saturate(1.22) brightness(1.09);
+}
+html body .tc-shell.is-champ.is-prospect:active .tc-frame::before { opacity: 1; }
+
+/* 이름 텍스트 */
+html body .tc-shell.is-champ.is-prospect .tc-name-text {
+  background: linear-gradient(100deg, #ffe89e 0%, #ffffff 46%, #dbeafe 64%, #60a5fa 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: #e0f2fe !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  transition: filter 400ms cubic-bezier(.22, 1, .36, 1) !important;
+}
+html body .tc-shell.is-champ.is-prospect:hover .tc-name-text,
+html body .tc-shell.is-champ.is-prospect:active .tc-name-text {
+  filter: brightness(1.1) saturate(1.08);
+}
+
+/* ── 모바일 최적화: 좁은 카드에 맞춰 각도·확산·전환 축소 ── */
+@media (max-width: 820px) {
+  html body .tc-shell.is-champ.is-prospect .tc-frame {
+    background:
+      radial-gradient(80% 120% at 50% 40%, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 68%),
+      linear-gradient(104deg,
+        rgba(250, 204, 21, .72) 0%,
+        rgba(255, 232, 158, .54) 18%,
+        rgba(255, 255, 255, .30) 42%,
+        rgba(219, 234, 254, .46) 62%,
+        rgba(96, 165, 250, .66) 84%,
+        rgba(37, 99, 235, .56) 100%),
+      linear-gradient(180deg, #171006 0%, #0c111c 55%, #0a1424 100%) !important;
+    box-shadow:
+      -5px -5px 14px rgba(250, 204, 21, .30),
+      5px 5px 14px rgba(59, 130, 246, .34),
+      0 10px 22px rgba(0, 0, 0, .82),
+      inset 0 0 0 1px rgba(255, 255, 255, .16) !important;
+    transition:
+      box-shadow 300ms cubic-bezier(.22, 1, .36, 1),
+      filter 300ms cubic-bezier(.22, 1, .36, 1),
+      transform 120ms cubic-bezier(.22, 1, .36, 1) !important;
+  }
+  html body .tc-shell.is-champ.is-prospect .tc-frame::before {
+    transition: opacity 300ms cubic-bezier(.22, 1, .36, 1);
+  }
+  html body .tc-shell.is-champ.is-prospect:hover .tc-frame,
+  html body .tc-shell.is-champ.is-prospect:focus-within .tc-frame {
+    box-shadow:
+      -8px -8px 20px rgba(250, 204, 21, .52),
+      8px 8px 20px rgba(59, 130, 246, .56),
+      0 14px 28px rgba(0, 0, 0, .9),
+      inset 0 0 0 1px rgba(255, 255, 255, .26) !important;
+    filter: saturate(1.10) brightness(1.04);
+  }
+  html body .tc-shell.is-champ.is-prospect:active .tc-frame {
+    transform: scale(.972) !important;
+    box-shadow:
+      -9px -9px 22px rgba(250, 204, 21, .66),
+      9px 9px 22px rgba(59, 130, 246, .70),
+      0 8px 18px rgba(0, 0, 0, .92),
+      inset 0 0 0 1px rgba(255, 255, 255, .34) !important;
+    filter: saturate(1.18) brightness(1.07);
+  }
+}
+
+/* 터치 기기: 호버가 없으므로 누를 때 확실히 반응 */
+@media (hover: none) {
+  html body .tc-shell.is-champ.is-prospect:active .tc-frame::before { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .tc-shell.is-champ.is-prospect .tc-frame,
+  html body .tc-shell.is-champ.is-prospect .tc-frame::before,
+  html body .tc-shell.is-champ.is-prospect .tc-name-text {
+    transition: none !important;
+  }
+  html body .tc-shell.is-champ.is-prospect:active .tc-frame { transform: none !important; }
+}
