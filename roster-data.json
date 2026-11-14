@@ -478,7 +478,8 @@
         "x": -0.3,
         "y": 23.2
       },
-      "bio": ""
+      "bio": "",
+      "favorite": true
     },
     {
       "id": "jordan-sparkes",
@@ -2312,5 +2313,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:45:05"
+  "sourceVersion": "roster-2026-11-14T02:45:13"
 }
