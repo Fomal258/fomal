@@ -1594,7 +1594,8 @@
       "links": [
         "https://www.youtube.com/results?search_query=Heinrich+Zorn+wrestling&sp=EgQIBRAB"
       ],
-      "createdAt": 1793981316755
+      "createdAt": 1793981316755,
+      "favorite": true
     },
     {
       "id": "wrestler-1793981354000",
@@ -2315,5 +2316,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:52:28"
+  "sourceVersion": "roster-2026-11-14T02:52:40"
 }
