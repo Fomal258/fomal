@@ -6254,7 +6254,211 @@ a {
 }
 
 </style>
-  </head>
+  <style id="prospect-pass">
+
+/* ════════════════════════════════════════════════════════════
+   PROSPECT (유망주) — 사용자 제작 아이콘·효과 발췌 적용
+   ════════════════════════════════════════════════════════════ */
+/* ────────────────────────────────────────────────────────────
+   36. 유망주(PROSPECT) 01번 클래식 타임키퍼 타종 벨 & 플래티넘 코발트 테마 (Option 3)
+   ──────────────────────────────────────────────────────────── */
+.tc-shell .prospect-button,
+.tc-shell:hover .prospect-button,
+.tc-shell.is-prospect .prospect-button.is-prospect,
+.tc-shell .prospect-button:hover,
+.tc-shell .prospect-button.is-prospect {
+  position: absolute !important;
+  left: 6px !important;
+  right: auto !important;
+  top: 40px !important;
+  width: 58px !important;
+  height: 44px !important;
+  padding: 4px 0 0 7px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  z-index: 14 !important;
+  cursor: pointer !important;
+}
+.tc-shell .prospect-button:not(.is-prospect),
+.tc-shell:hover .prospect-button:not(.is-prospect) {
+  opacity: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: scale(.94);
+  transition: opacity .2s ease, transform .22s ease !important;
+}
+.tc-shell .prospect-button:not(.is-prospect):hover,
+.tc-shell .prospect-button:not(.is-prospect):focus-visible {
+  opacity: 1 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: scale(1.06) !important;
+}
+.tc-shell .prospect-button.is-prospect,
+.tc-shell:hover .prospect-button.is-prospect,
+.tc-shell.is-prospect .prospect-button.is-prospect {
+  opacity: 1 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: scale(1);
+}
+.tc-shell .prospect-button.is-prospect:hover,
+.tc-shell.is-prospect .prospect-button.is-prospect:hover {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform: scale(1.12) !important;
+}
+.tc-shell .prospect-button svg.prospect-bell-svg {
+  width: 42px !important;
+  height: 28px !important;
+  display: block !important;
+  background: transparent !important;
+  filter:
+    drop-shadow(0 1.5px 2px rgba(0, 0, 0, .95))
+    drop-shadow(0 0 2px rgba(0, 0, 0, .85)) !important;
+}
+.tc-shell .prospect-button.is-prospect svg.prospect-bell-svg {
+  width: 44px !important;
+  height: 30px !important;
+  background: transparent !important;
+  filter:
+    drop-shadow(0 2px 3px rgba(0, 0, 0, .98))
+    drop-shadow(0 0 9px rgba(59, 130, 246, .65)) !important;
+}
+
+/* 유망주 단독 ON: 플래티넘 코발트 크롬 카드 프레임 & 마우스 추적 스페큘러 광택 */
+.tc-shell.is-prospect:not(.is-champ) .tc-frame {
+  transform: none !important;
+  background:
+    radial-gradient(
+      165px circle at var(--gx, 50%) var(--gy, 50%),
+      rgba(240, 249, 255, .98) 0%,
+      rgba(147, 197, 253, .92) 30%,
+      rgba(37, 99, 235, .52) 60%,
+      transparent 100%
+    ),
+    linear-gradient(
+      135deg,
+      #0f2952 0%,
+      #93c5fd 22%,
+      #1d4ed8 44%,
+      #ffffff 51%,
+      #2563eb 58%,
+      #bae6fd 80%,
+      #0f172a 100%
+    ) !important;
+  box-shadow:
+    0 15px 34px rgba(0, 0, 0, .82),
+    0 0 18px rgba(59, 130, 246, .36) !important;
+}
+.tc-shell.is-prospect:not(.is-champ):hover .tc-frame {
+  transform: none !important;
+  background:
+    radial-gradient(
+      195px circle at var(--gx, 50%) var(--gy, 50%),
+      #ffffff 0%,
+      #e0f2fe 26%,
+      #60a5fa 52%,
+      rgba(29, 78, 216, .45) 78%,
+      transparent 100%
+    ),
+    linear-gradient(
+      135deg,
+      #0f2952 0%,
+      #93c5fd 22%,
+      #1d4ed8 44%,
+      #ffffff 51%,
+      #2563eb 58%,
+      #bae6fd 80%,
+      #0f172a 100%
+    ) !important;
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, .88),
+    0 0 28px rgba(96, 165, 250, .55) !important;
+}
+
+/* 유망주 단독 ON: 고휘도 플래티넘 코발트 메탈릭 이름 */
+.tc-shell.is-prospect:not(.is-champ) .tc-name-text,
+.tc-shell.is-prospect:not(.is-champ):hover .tc-name-text,
+.tc-shell.is-prospect:not(.is-champ) .card-caption.tc-nameplate:hover .tc-name-text {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #e0f2fe 45%,
+    #60a5fa 100%
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: #bae6fd !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  filter:
+    drop-shadow(0 1.5px 0 #020617)
+    drop-shadow(0 3px 5px rgba(0, 0, 0, .88)) !important;
+}
+
+/* 찜(24K 골드) + 유망주(플래티넘 코발트) 동시 ON: 듀얼 하이브리드 크롬 프레임 */
+.tc-shell.is-champ.is-prospect .tc-frame,
+.tc-shell.is-champ.is-prospect:hover .tc-frame {
+  transform: none !important;
+  background:
+    radial-gradient(
+      180px circle at var(--gx, 50%) var(--gy, 50%),
+      #ffffff 0%,
+      rgba(254, 240, 138, .85) 32%,
+      rgba(96, 165, 250, .65) 64%,
+      transparent 100%
+    ),
+    linear-gradient(
+      135deg,
+      #63450e 0%,
+      #facc15 24%,
+      #fffbeb 46%,
+      #ffffff 50%,
+      #60a5fa 56%,
+      #1d4ed8 78%,
+      #0f172a 100%
+    ) !important;
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, .86),
+    -4px -4px 18px rgba(250, 204, 21, .34),
+    4px 4px 18px rgba(59, 130, 246, .4) !important;
+}
+
+/* 프로필 상세 모달 내 유망주 배지 & 프레임 */
+.tc-prospect-tag {
+  padding: 2px 6px;
+  background: linear-gradient(90deg, #1d4ed8, #60a5fa);
+  color: #ffffff;
+  font: 900 9px/1 "Barlow Condensed", sans-serif;
+  letter-spacing: .08em;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, .45);
+}
+.info-image.info-image-portrait.is-prospect:not(.is-champ) {
+  border: 2px solid #60a5fa !important;
+  box-shadow: 0 14px 32px rgba(37, 99, 235, .3) !important;
+}
+
+/* 터치 환경: hover가 없으므로 미선택 상태도 흐리게 노출 */
+@media (hover: none) {
+  .tc-shell .prospect-button:not(.is-prospect) {
+    opacity: .55 !important;
+    transform: scale(1) !important;
+  }
+}
+
+</style>
+</head>
   <body>
     <div id="root"></div>
     <script>
@@ -8043,6 +8247,104 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
     if (pending) return;
     pending = true;
     setTimeout(function () { pending = false; scan(); }, 150);
+  }).observe(document.body, { childList: true, subtree: true });
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", scan);
+  else scan();
+})();
+</script>
+
+
+<script id="prospect-layer">
+(function () {
+  if (window.__prospectLayer) return;
+  window.__prospectLayer = true;
+
+  var KEY = "ringRosterProspects";
+  function load() {
+    try { return new Set(JSON.parse(localStorage.getItem(KEY) || "[]")); } catch (e) { return new Set(); }
+  }
+  function save(set) {
+    try { localStorage.setItem(KEY, JSON.stringify([...set])); } catch (e) {}
+  }
+  var flags = load();
+
+  function bell(active) {
+    var p = active ? "pb" : "pb2";
+    var rim = active ? "url(#" + p + "-rim)" : "url(#belt-silver-grad)";
+    var board = active ? "url(#" + p + "-board)" : "none";
+    var dome = active ? "url(#" + p + "-dome)" : "none";
+    var rivet = active ? "#e2e8f0" : "#94a3b8";
+    var inner = active ? "#bae6fd" : rim;
+    var defs = active
+      ? '<defs>' +
+          '<linearGradient id="' + p + '-rim" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffffff"/><stop offset="28%" stop-color="#e2e8f0"/><stop offset="55%" stop-color="#94a3b8"/><stop offset="80%" stop-color="#f8fafc"/><stop offset="100%" stop-color="#475569"/></linearGradient>' +
+          '<linearGradient id="' + p + '-board" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1e293b"/><stop offset="50%" stop-color="#0f172a"/><stop offset="100%" stop-color="#020617"/></linearGradient>' +
+          '<radialGradient id="' + p + '-dome" cx="38%" cy="32%" r="68%"><stop offset="0%" stop-color="#e0f2fe"/><stop offset="24%" stop-color="#60a5fa"/><stop offset="58%" stop-color="#2563eb"/><stop offset="85%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#0f172a"/></radialGradient>' +
+        '</defs>'
+      : '';
+
+    return '<svg class="prospect-bell-svg" viewBox="0 0 36 24" fill="none" aria-hidden="true">' + defs +
+      '<path d="M5.5 2.2H22.5L25.5 5.2V18.8L22.5 21.8H5.5L2.5 18.8V5.2L5.5 2.2Z" fill="' + board + '" stroke="' + rim + '" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<circle cx="5.6" cy="5.2" r="0.75" fill="' + rivet + '"/><circle cx="22.4" cy="5.2" r="0.75" fill="' + rivet + '"/>' +
+      '<circle cx="5.6" cy="18.8" r="0.75" fill="' + rivet + '"/><circle cx="22.4" cy="18.8" r="0.75" fill="' + rivet + '"/>' +
+      '<circle cx="14" cy="12" r="6.8" fill="' + dome + '" stroke="' + rim + '" stroke-width="1.45"/>' +
+      '<circle cx="14" cy="12" r="4.6" fill="none" stroke="' + inner + '" stroke-opacity="' + (active ? "0.75" : "0.55") + '" stroke-width="0.85"/>' +
+      (active ? '<path d="M9.6 9.2A5.2 5.2 0 0 1 17.6 7.8" fill="none" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round" opacity="0.9"/>' : '') +
+      '<circle cx="14" cy="12" r="1.9" fill="' + (active ? "#ffffff" : "none") + '" stroke="' + (active ? "#38bdf8" : rim) + '" stroke-width="1.1"/>' +
+      '<path d="M27.2 10.2L31.8 19.8" fill="none" stroke="' + rim + '" stroke-width="1.8" stroke-linecap="round"/>' +
+      '<path d="M23.5 7.4L29.3 4.8L30.8 8.0L25.0 10.6Z" fill="' + (active ? "url(#" + p + "-rim)" : "none") + '" stroke="' + (active ? "#ffffff" : rim) + '" stroke-width="1.2" stroke-linejoin="round"/>' +
+      '<path d="M22.2 3.2C24.2 4.3 25.4 6.1 25.8 8.2" fill="none" stroke="' + (active ? "#60a5fa" : rim) + '" stroke-width="1.25" stroke-linecap="round"/>' +
+      '<path d="M24.4 1.6C27.0 3.0 28.6 5.3 29.1 8.1" fill="none" stroke="' + (active ? "#60a5fa" : rim) + '" stroke-width="1.25" stroke-linecap="round"/>' +
+    '</svg>';
+  }
+
+  function nameOf(card) {
+    var el = card.querySelector(".tc-name-text");
+    return el ? el.textContent.trim() : "";
+  }
+
+  function paint(card, on) {
+    card.classList.toggle("is-prospect", on);
+    var btn = card.querySelector(".prospect-button");
+    if (!btn) return;
+    btn.classList.toggle("is-prospect", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.innerHTML = bell(on);
+  }
+
+  function wire(card) {
+    if (card.dataset.prospectWired) return;
+    var name = nameOf(card);
+    if (!name) return;
+    card.dataset.prospectWired = "1";
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "prospect-button";
+    btn.setAttribute("aria-label", name + " 유망주 등록");
+    btn.addEventListener("click", function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var on = !flags.has(name);
+      if (on) flags.add(name); else flags.delete(name);
+      save(flags);
+      paint(card, on);
+      btn.setAttribute("aria-label", name + (on ? " 유망주 해제" : " 유망주 등록"));
+    });
+    card.appendChild(btn);
+    paint(card, flags.has(name));
+  }
+
+  function scan() {
+    document.querySelectorAll(".card-shell").forEach(wire);
+  }
+
+  var pending = false;
+  new MutationObserver(function () {
+    if (pending) return;
+    pending = true;
+    setTimeout(function () { pending = false; scan(); }, 120);
   }).observe(document.body, { childList: true, subtree: true });
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", scan);
