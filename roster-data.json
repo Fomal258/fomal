@@ -205,7 +205,8 @@
         "x": -2.0000000000000004,
         "y": 1.3333333333333333
       },
-      "bio": ""
+      "bio": "",
+      "favorite": true
     },
     {
       "id": "charlie-sterling",
@@ -362,7 +363,8 @@
       "image": "",
       "links": [
         "https://www.youtube.com/results?search_query=Ichiban%20wrestling%202026&sp=CAI%253D"
-      ]
+      ],
+      "favorite": true
     },
     {
       "id": "iestyn-rees",
@@ -2316,5 +2318,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:52:45"
+  "sourceVersion": "roster-2026-11-14T02:56:42"
 }
