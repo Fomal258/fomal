@@ -1907,7 +1907,7 @@
         "https://www.youtube.com/results?search_query=+Jarett+Diaz&sp=EgQIBRAB"
       ],
       "createdAt": 1794215966250,
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "wrestler-1794217182847",
@@ -2313,5 +2313,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:46:14"
+  "sourceVersion": "roster-2026-11-14T02:46:16"
 }
