@@ -82,12 +82,11 @@ export default function Home() {
     let cancelled = false;
 
     const apply = (saved: RosterState) => {
-      const outdated = saved.sourceVersion !== ROSTER_VERSION;
-      const favorites = new Map(saved.wrestlers.map(w => [w.id, Boolean(w.favorite)]));
-      const prospects = new Map(saved.wrestlers.map(w => [w.id, Boolean(w.prospect)]));
-      const wrestlers = outdated
-        ? defaultWrestlers.map(w => ({ ...w, favorite: favorites.get(w.id) ?? false, prospect: prospects.get(w.id) ?? false }))
-        : saved.wrestlers.map(w => ({ ...w, names: wrestlerNames(w) }));
+      // roster-data.json(또는 저장된 상태)이 있으면 그 명단을 그대로 신뢰합니다.
+      // 예전에는 버전이 다르면 기본 명단으로 되돌려, 166명이 129명으로 줄어드는 문제가 있었습니다.
+      const wrestlers = saved.wrestlers.length
+        ? saved.wrestlers.map(w => ({ ...w, names: wrestlerNames(w) }))
+        : defaultWrestlers;
       setRoster({
         wrestlers,
         columns: Math.max(3, Math.min(9, saved.columns || 7)),
