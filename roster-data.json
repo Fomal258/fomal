@@ -1352,7 +1352,7 @@
         "y": 4
       },
       "bio": "",
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "nick-strong",
@@ -1749,7 +1749,7 @@
         "https://www.youtube.com/results?search_query=Jimmy+Townsend+vs"
       ],
       "createdAt": 1794097405205,
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "wrestler-1794100041365",
@@ -2014,7 +2014,7 @@
         "https://www.youtube.com/results?search_query=joey+osborne+wrestling"
       ],
       "createdAt": 1794223682029,
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "wrestler-1794223736642",
@@ -2311,5 +2311,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:42:05"
+  "sourceVersion": "roster-2026-11-14T02:42:11"
 }
