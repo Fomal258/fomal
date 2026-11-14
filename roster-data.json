@@ -364,7 +364,7 @@
       "links": [
         "https://www.youtube.com/results?search_query=Ichiban%20wrestling%202026&sp=CAI%253D"
       ],
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "iestyn-rees",
@@ -2318,5 +2318,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:56:42"
+  "sourceVersion": "roster-2026-11-14T02:56:47"
 }
