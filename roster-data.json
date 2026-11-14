@@ -1943,7 +1943,7 @@
         "https://www.youtube.com/results?search_query=Thomas+Heim+&sp=EgIQAQ%253D%253D"
       ],
       "createdAt": 1794219941893,
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "wrestler-1794221097848",
@@ -2067,7 +2067,7 @@
         "https://www.youtube.com/results?search_query=Wes+Barkley+&sp=EgIQAQ%253D%253D"
       ],
       "createdAt": 1794229745475,
-      "favorite": true
+      "favorite": false
     },
     {
       "id": "wrestler-1794312474344",
@@ -2175,7 +2175,7 @@
     }
   ],
   "columns": 6,
-  "sortOrder": "favorites",
+  "sortOrder": "newest",
   "design": {
     "showHeader": true,
     "showBrand": true,
@@ -2311,5 +2311,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:42:14"
+  "sourceVersion": "roster-2026-11-14T02:42:24"
 }
