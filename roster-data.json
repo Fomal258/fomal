@@ -1943,7 +1943,7 @@
         "https://www.youtube.com/results?search_query=Thomas+Heim+&sp=EgIQAQ%253D%253D"
       ],
       "createdAt": 1794219941893,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794221097848",
@@ -1979,7 +1979,7 @@
         "https://www.youtube.com/results?search_query=Eddie+Edwards+vs&sp=EgQIBRAB"
       ],
       "createdAt": 1794221453277,
-      "favorite": false
+      "favorite": true
     },
     {
       "id": "wrestler-1794222560650",
@@ -2313,5 +2313,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:45:49"
+  "sourceVersion": "roster-2026-11-14T02:45:55"
 }
