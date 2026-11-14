@@ -1960,7 +1960,8 @@
       "links": [
         "https://www.youtube.com/results?search_query=Brian+Cage+vs&sp=EgQIBRAB"
       ],
-      "createdAt": 1794221097848
+      "createdAt": 1794221097848,
+      "favorite": true
     },
     {
       "id": "wrestler-1794221453277",
@@ -2312,5 +2313,5 @@
       "color": "#52525b"
     }
   ],
-  "sourceVersion": "roster-2026-11-14T02:45:44"
+  "sourceVersion": "roster-2026-11-14T02:45:49"
 }
