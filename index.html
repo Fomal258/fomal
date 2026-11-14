@@ -8426,8 +8426,14 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
     if (!sel || sel.dataset.prospectReady) return;
     sel.dataset.prospectReady = "1";
 
+    /* 기존 '기본순'을 드롭다운 맨 위의 '전체'로 바꿔, 기존 사용자도 빈칸이 보이지 않게 */
     var def = sel.querySelector('option[value="default"]');
-    if (def) { def.hidden = true; def.style.display = "none"; }
+    if (def) {
+      def.hidden = false;
+      def.style.display = "";
+      if (def.textContent.trim() !== "전체") def.textContent = "전체";
+      if (sel.firstElementChild !== def) sel.insertBefore(def, sel.firstElementChild);
+    }
 
     if (!sel.querySelector('option[value="prospects"]')) {
       var opt = document.createElement("option");
