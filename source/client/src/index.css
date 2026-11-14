@@ -6497,3 +6497,80 @@ html body .tc-shell.is-champ.is-prospect:hover .tc-name-text {
     transition: none !important;
   }
 }
+/* 듀얼 프레임(찜+유망주): 금→샴페인→백금→아이스→코발트로 이어지는 부드러운 금속 테두리 */
+html body .tc-shell.is-champ.is-prospect .tc-frame {
+  position: relative;
+  background:
+    radial-gradient(72% 132% at 50% 46%, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 66%),
+    linear-gradient(118deg,
+      rgba(250, 204, 21, .74) 0%,
+      rgba(255, 232, 158, .58) 24%,
+      rgba(255, 255, 255, .30) 47%,
+      rgba(219, 234, 254, .48) 57%,
+      rgba(96, 165, 250, .68) 78%,
+      rgba(37, 99, 235, .58) 100%),
+    linear-gradient(180deg, #171006 0%, #0c111c 55%, #0a1424 100%) !important;
+  box-shadow:
+    -8px -8px 24px rgba(250, 204, 21, .34),
+    8px 8px 24px rgba(59, 130, 246, .38),
+    0 18px 38px rgba(0, 0, 0, .86),
+    inset 0 0 0 1px rgba(255, 255, 255, .18) !important;
+  transition:
+    box-shadow 400ms cubic-bezier(.22, 1, .36, 1),
+    filter 400ms cubic-bezier(.22, 1, .36, 1) !important;
+  will-change: box-shadow, filter;
+}
+
+html body .tc-shell.is-champ.is-prospect .tc-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(80% 142% at 50% 46%, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 68%),
+    linear-gradient(118deg,
+      rgba(253, 224, 71, .52) 0%,
+      rgba(255, 240, 190, .40) 24%,
+      rgba(255, 255, 255, .34) 47%,
+      rgba(230, 242, 255, .40) 57%,
+      rgba(147, 197, 253, .52) 78%,
+      rgba(59, 130, 246, .46) 100%);
+  opacity: 0;
+  transition: opacity 400ms cubic-bezier(.22, 1, .36, 1);
+}
+html body .tc-shell.is-champ.is-prospect:hover .tc-frame::before,
+html body .tc-shell.is-champ.is-prospect:focus-within .tc-frame::before {
+  opacity: 1;
+}
+
+html body .tc-shell.is-champ.is-prospect:hover .tc-frame,
+html body .tc-shell.is-champ.is-prospect:focus-within .tc-frame {
+  box-shadow:
+    -13px -13px 36px rgba(250, 204, 21, .60),
+    13px 13px 36px rgba(59, 130, 246, .60),
+    0 26px 52px rgba(0, 0, 0, .92),
+    inset 0 0 0 1px rgba(255, 255, 255, .30) !important;
+  filter: saturate(1.14) brightness(1.05);
+}
+
+html body .tc-shell.is-champ.is-prospect .tc-name-text {
+  background: linear-gradient(100deg, #ffe89e 0%, #ffffff 46%, #dbeafe 64%, #60a5fa 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: #e0f2fe !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  transition: filter 400ms cubic-bezier(.22, 1, .36, 1) !important;
+}
+html body .tc-shell.is-champ.is-prospect:hover .tc-name-text {
+  filter: brightness(1.1) saturate(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html body .tc-shell.is-champ.is-prospect .tc-frame,
+  html body .tc-shell.is-champ.is-prospect .tc-frame::before,
+  html body .tc-shell.is-champ.is-prospect .tc-name-text {
+    transition: none !important;
+  }
+}
