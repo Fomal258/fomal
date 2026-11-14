@@ -1,0 +1,87 @@
+<script id="mobile-ux-script">
+(function () {
+  if (window.__mobileUx) return;
+  window.__mobileUx = true;
+
+  var ICONS = {
+    home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/>',
+    roster: '<rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="13" width="7" height="7" rx="1.5"/><rect x="14" y="13" width="7" height="7" rx="1.5"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>',
+    star: '<path d="m12 3.6 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.8-5.2 2.8 1-5.8-4.3-4.1 5.9-.9z"/>',
+    sync: '<path d="M20 11a8 8 0 0 0-13.7-5.3L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 13.7 5.3L20 16"/><path d="M20 20v-4h-4"/>'
+  };
+
+  function icon(name) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
+  }
+
+  var scrollToRoster = function () {
+    var el = document.getElementById("roster");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  function openSync() {
+    var buttons = document.querySelectorAll("button");
+    for (var i = 0; i < buttons.length; i++) {
+      var t = (buttons[i].textContent || "").replace(/\s+/g, "");
+      if (t.indexOf("깃허브") >= 0) {
+        buttons[i].click();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function setSort(value) {
+    var sel = document.querySelector('select[aria-label="로스터 정렬"]');
+    if (!sel) return false;
+    var setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set;
+    setter.call(sel, value);
+    sel.dispatchEvent(new Event("change", { bubbles: true }));
+    return true;
+  }
+
+  function build() {
+    if (document.querySelector(".mobile-dock")) return;
+    var nav = document.createElement("nav");
+    nav.className = "mobile-dock";
+    nav.setAttribute("aria-label", "모바일 빠른 메뉴");
+    nav.innerHTML =
+      '<button type="button" data-act="home">' + icon("home") + '<span>홈</span></button>' +
+      '<button type="button" data-act="roster">' + icon("roster") + '<span>명단</span></button>' +
+      '<button type="button" data-act="search">' + icon("search") + '<span>검색</span></button>' +
+      '<button type="button" data-act="favorites">' + icon("star") + '<span>찜</span></button>' +
+      '<button type="button" data-act="sync">' + icon("sync") + '<span>동기화</span></button>';
+
+    nav.addEventListener("click", function (event) {
+      var btn = event.target.closest("button[data-act]");
+      if (!btn) return;
+      var act = btn.getAttribute("data-act");
+      if (act === "home") window.scrollTo({ top: 0, behavior: "smooth" });
+      if (act === "roster") scrollToRoster();
+      if (act === "search") {
+        scrollToRoster();
+        var input = document.querySelector('input[aria-label="선수 검색"], .search-box input');
+        if (input) { input.focus({ preventScroll: true }); }
+      }
+      if (act === "favorites") {
+        if (setSort("favorites")) scrollToRoster();
+      }
+      if (act === "sync") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (!openSync()) alert("깃허브 동기화 설정을 찾지 못했습니다. 페이지를 새로고침한 뒤 다시 눌러 주세요.");
+      }
+      btn.classList.add("is-on");
+      setTimeout(function () { btn.classList.remove("is-on"); }, 700);
+    });
+
+    document.body.appendChild(nav);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", build);
+  } else {
+    build();
+  }
+})();
+</script>

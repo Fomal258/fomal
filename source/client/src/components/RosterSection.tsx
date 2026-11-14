@@ -3,7 +3,6 @@ import { ChevronDown, Grid2X2, Heart, ImagePlus, Minus, Pencil, Plus, RotateCw, 
 import type { SiteDesign } from "@/lib/design";
 import { hasPhotoIndex, imageOf, probePhoto } from "@/data/photos";
 import { cropTransform, displayName, linkLabel, wrestlerLinks, wrestlerNames, type RosterState, type SortOrder, type Wrestler } from "@/lib/storage";
-import { readRosterUrl, writeRosterUrl } from "@/lib/urlState";
 
 type Props = {
   design: SiteDesign;
@@ -17,6 +16,7 @@ type Props = {
   onSort: (order: RosterState["sortOrder"]) => void;
   onColumns: (delta: number) => void;
   onToggleFavorite: (id: string) => void;
+  onToggleProspect: (id: string) => void;
   onEdit: (wrestler: Wrestler) => void;
   onAdd: () => void;
   onInfo: (wrestler: Wrestler) => void;
@@ -162,6 +162,39 @@ function ChampBeltIcon({ active }: { active: boolean }) {
   );
 }
 
+
+/* 유망주(플래티넘 코발트 타임키퍼 벨) 아이콘 */
+function ProspectBellIcon({ active }: { active: boolean }) {
+  const rail = active ? "url(#pb-grad)" : "#c9cfd8";
+  return (
+    <svg className="prospect-bell-svg" viewBox="0 0 36 24" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="pb-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" /><stop offset="30%" stopColor="#e2e8f0" />
+          <stop offset="60%" stopColor="#94a3b8" /><stop offset="100%" stopColor="#475569" />
+        </linearGradient>
+        <radialGradient id="pb-dome" cx="38%" cy="32%" r="68%">
+          <stop offset="0%" stopColor="#e0f2fe" /><stop offset="26%" stopColor="#60a5fa" />
+          <stop offset="60%" stopColor="#2563eb" /><stop offset="100%" stopColor="#0f172a" />
+        </radialGradient>
+      </defs>
+      <path d="M5.5 2.2H22.5L25.5 5.2V18.8L22.5 21.8H5.5L2.5 18.8V5.2L5.5 2.2Z" fill={active ? "#0f172a" : "none"} stroke={rail} strokeWidth="1.5" strokeLinejoin="round" />
+      <circle cx="5.6" cy="5.2" r="0.75" fill={active ? "#e2e8f0" : "#94a3b8"} />
+      <circle cx="22.4" cy="5.2" r="0.75" fill={active ? "#e2e8f0" : "#94a3b8"} />
+      <circle cx="5.6" cy="18.8" r="0.75" fill={active ? "#e2e8f0" : "#94a3b8"} />
+      <circle cx="22.4" cy="18.8" r="0.75" fill={active ? "#e2e8f0" : "#94a3b8"} />
+      <circle cx="14" cy="12" r="6.8" fill={active ? "url(#pb-dome)" : "none"} stroke={rail} strokeWidth="1.45" />
+      <circle cx="14" cy="12" r="4.6" fill="none" stroke={active ? "#bae6fd" : rail} strokeOpacity={active ? "0.75" : "0.55"} strokeWidth="0.85" />
+      {active && <path d="M9.6 9.2A5.2 5.2 0 0 1 17.6 7.8" fill="none" stroke="#ffffff" strokeWidth="1.1" strokeLinecap="round" opacity="0.9" />}
+      <circle cx="14" cy="12" r="1.9" fill={active ? "#ffffff" : "none"} stroke={active ? "#38bdf8" : rail} strokeWidth="1.1" />
+      <path d="M27.2 10.2L31.8 19.8" fill="none" stroke={rail} strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M23.5 7.4L29.3 4.8L30.8 8.0L25.0 10.6Z" fill={active ? "#e2e8f0" : "none"} stroke={active ? "#ffffff" : rail} strokeWidth="1.2" strokeLinejoin="round" />
+      <path d="M22.2 3.2C24.2 4.3 25.4 6.1 25.8 8.2" fill="none" stroke={active ? "#60a5fa" : rail} strokeWidth="1.25" strokeLinecap="round" />
+      <path d="M24.4 1.6C27.0 3.0 28.6 5.3 29.1 8.1" fill="none" stroke={active ? "#60a5fa" : rail} strokeWidth="1.25" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 // 카드 한 장 (① 트레이딩 카드 프레임 + ② 실루엣 포스터 플레이스홀더 + ④ 3D 틸트·광택·챔피언십 골드)
 function Card({
   wrestler,
@@ -171,6 +204,7 @@ function Card({
   onEdit,
   onInfo,
   onToggleFavorite,
+  onToggleProspect,
   onPickLinks,
   revealRef,
   revealDelay = 0,
@@ -184,6 +218,7 @@ function Card({
   onEdit: (w: Wrestler) => void;
   onInfo: (w: Wrestler) => void;
   onToggleFavorite: (id: string) => void;
+  onToggleProspect: (id: string) => void;
   onPickLinks: (w: Wrestler, anchor: HTMLElement) => void;
   animate?: boolean;
   order?: number;
@@ -250,9 +285,6 @@ function Card({
               src={photo || autoPhoto}
               alt={`${name} 프로필`}
               loading={index > 6 ? "lazy" : "eager"}
-              decoding="async"
-              fetchPriority={index > 6 ? "low" : "high"}
-              draggable={false}
               onError={() => setFailed(true)}
             />
           </div>
@@ -310,7 +342,7 @@ function Card({
 
   return (
     <div
-      className={`card-shell tc-shell ${wrestler.favorite ? "is-champ" : ""} ${animate ? "is-filtering" : ""}`}
+      className={`card-shell tc-shell ${wrestler.favorite ? "is-champ" : ""} ${wrestler.prospect ? "is-prospect" : ""} ${animate ? "is-filtering" : ""}`}
       ref={node => {
         shellRef.current = node;
         if (revealRef) revealRef(node);
@@ -349,6 +381,15 @@ function Card({
       >
         <ChampBeltIcon active={Boolean(wrestler.favorite)} />
       </button>
+      <button
+        type="button"
+        className={`prospect-button ${wrestler.prospect ? "is-prospect" : ""}`}
+        onClick={() => onToggleProspect(wrestler.id)}
+        aria-label={wrestler.prospect ? `${name} 유망주 해제` : `${name} 유망주 등록`}
+        aria-pressed={Boolean(wrestler.prospect)}
+      >
+        <ProspectBellIcon active={Boolean(wrestler.prospect)} />
+      </button>
     </div>
   );
 }
@@ -382,14 +423,13 @@ export default function RosterSection(props: Props) {
   const { design, roster, visibleColumns, ready, loadFailed, storageError, manageMode, editable } = props;
 
   // 검색어와 자동완성 목록은 이 컴포넌트 안에서만 씁니다.
-  // 처음 값은 주소(?q=&letter=)에서 읽어, 공유한 화면이 그대로 열리게 합니다.
-  const [query, setQuery] = useState(() => readRosterUrl().q);
+  const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   // 링크가 2개 이상인 카드를 눌렀을 때 뜨는 작은 선택 팝업
   const [picker, setPicker] = useState<Picker | null>(null);
   // 이름 첫 글자 필터 ("all" | "#" | "A".."Z" | "기타")
-  const [letter, setLetter] = useState(() => readRosterUrl().letter);
+  const [letter, setLetter] = useState("all");
   const revealRef = useRevealRef(); // 카드 스크롤 등장
   const [motionTick, setMotionTick] = useState(0); // 필터가 바뀔 때마다 카드 등장 모션 재생
   const [stuck, setStuck] = useState(false); // 툴바가 상단에 붙었는지
@@ -425,6 +465,7 @@ export default function RosterSection(props: Props) {
     const byName = (a: Wrestler, b: Wrestler) => displayName(a).localeCompare(displayName(b), "en", { sensitivity: "base" });
     const registered = (w: Wrestler) => w.createdAt ?? 0;
     if (roster.sortOrder === "favorites") return matched.filter(w => w.favorite).sort(byName);
+    if (roster.sortOrder === "prospects") return matched.filter(w => w.prospect).sort(byName);
     if (roster.sortOrder === "asc") return [...matched].sort(byName);
     if (roster.sortOrder === "desc") return [...matched].sort((a, b) => byName(b, a));
     if (roster.sortOrder === "newest") return [...matched].sort((a, b) => registered(b) - registered(a));
@@ -439,23 +480,6 @@ export default function RosterSection(props: Props) {
     acc[key] = (acc[key] ?? 0) + 1;
     return acc;
   }, {});
-
-  // 검색어·첫 글자·정렬·열 수를 주소에 반영합니다. (새로고침·공유해도 같은 화면)
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      writeRosterUrl({ q: query.trim(), letter, sort: roster.sortOrder, cols: roster.columns });
-    }, 200);
-    return () => window.clearTimeout(timer);
-  }, [query, letter, roster.sortOrder, roster.columns]);
-
-  // 필터가 하나라도 걸려 있으면 초기화 버튼을 보여줍니다.
-  const filtersActive = query.trim() !== "" || letter !== "all" || roster.sortOrder !== "default";
-  const resetFilters = () => {
-    setQuery("");
-    setOpen(false);
-    setLetter("all");
-    props.onSort("default");
-  };
 
   // 랜덤을 고를 때마다 새 순서로 섞습니다.
   useEffect(() => {
@@ -527,18 +551,6 @@ export default function RosterSection(props: Props) {
       style={{ backgroundColor: design.rosterBg }}
     >
       <div className="section-inner">
-        {/* 인쇄(PDF)에서만 보이는 머리말 */}
-        <div className="print-head">
-          <strong>RING ROSTER</strong>
-          <span>
-            전체 {roster.wrestlers.length}명 · {new Date().toLocaleDateString("ko-KR")}
-          </span>
-        </div>
-        {/* 화면 낭독기용 결과 알림 */}
-        <p className="sr-only" aria-live="polite">
-          {ready ? `${filtered.length}명 표시 중` : "로스터를 불러오는 중"}
-        </p>
-
         {/* 섹션 제목 */}
         <div className="section-heading">
           <div>
@@ -561,12 +573,13 @@ export default function RosterSection(props: Props) {
             <label className="sort-control">
               <span>정렬</span>
               <select value={roster.sortOrder} onChange={event => props.onSort(event.target.value as SortOrder)} aria-label="로스터 정렬">
-                <option value="default">기본순</option>
+                <option value="default">전체</option>
                 <option value="newest">최신 등록순</option>
                 <option value="oldest">오래된 등록순</option>
                 <option value="asc">A-Z</option>
                 <option value="desc">Z-A</option>
                 <option value="favorites">찜한 선수</option>
+                <option value="prospects">유망주</option>
                 <option value="random">랜덤</option>
               </select>
               {roster.sortOrder === "random" && (
@@ -629,13 +642,6 @@ export default function RosterSection(props: Props) {
                 </div>
               )}
             </div>
-
-            {filtersActive && (
-              <button type="button" className="filter-reset" onClick={resetFilters}>
-                <RotateCw size={13} />
-                <span>초기화</span>
-              </button>
-            )}
 
             {/* 열 수 조절 (3 ~ 9) */}
             <div className="columns-control" aria-label="한 줄에 표시할 선수 수">
@@ -714,6 +720,7 @@ export default function RosterSection(props: Props) {
                 onEdit={props.onEdit}
                 onInfo={props.onInfo}
                 onToggleFavorite={props.onToggleFavorite}
+                onToggleProspect={props.onToggleProspect}
                 onPickLinks={openPicker}
                 revealRef={revealRef}
                 revealDelay={(index % Math.max(1, visibleColumns)) * 35}

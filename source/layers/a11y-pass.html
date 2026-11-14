@@ -1,0 +1,51 @@
+<script id="a11y-pass">
+(function () {
+  if (window.__a11yPass) return;
+  window.__a11yPass = true;
+
+  var SELECTOR = ".info-modal, .editor-modal, .design-modal, .site-hub-modal, .gh-sync-modal";
+  var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  var current = null;
+  var previous = null;
+
+  function visible(root) {
+    var all = root.querySelectorAll(FOCUSABLE);
+    return Array.prototype.filter.call(all, function (el) {
+      return el.getClientRects().length > 0 && !el.hasAttribute("aria-hidden");
+    });
+  }
+
+  function open(el) {
+    previous = document.activeElement;
+    current = el;
+    if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
+    var first = visible(el)[0] || el;
+    first.focus({ preventScroll: true });
+  }
+
+  function close() {
+    current = null;
+    if (previous && previous.focus) previous.focus({ preventScroll: true });
+  }
+
+  document.addEventListener("keydown", function (event) {
+    if (!current || event.key !== "Tab") return;
+    var list = visible(current);
+    if (!list.length) return;
+    var first = list[0], last = list[list.length - 1];
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === current)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }, true);
+
+  new MutationObserver(function () {
+    var el = document.querySelector(SELECTOR);
+    if (el && el !== current) open(el);
+    else if (!el && current) close();
+  }).observe(document.body, { childList: true, subtree: true });
+})();
+</script>

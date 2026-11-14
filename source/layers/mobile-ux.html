@@ -1,0 +1,81 @@
+<style id="mobile-ux">
+/* ── 모바일 사용성 개선 (터치 타깃 · 하단 내비 · 카드 밀도) ── */
+@media (max-width: 820px) {
+  body { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+
+  /* 터치 타깃: 최소 44px */
+  /* .site-shell 이 zoom:0.95 로 축소되므로 48px로 잡아 실제 45~46px 확보 */
+  .header-edit, .header-edit.is-active,
+  .main-nav a,
+  .columns-control button,
+  .search-box input,
+  .sort-control select,
+  .alpha-chip,
+  .info-actions button,
+  .editor-modal button,
+  .gh-sync-modal button,
+  .site-hub-modal button,
+  .design-modal button {
+    min-height: 48px;
+  }
+  .columns-control button { min-width: 48px; }
+  .alpha-chip { min-width: 48px; height: 48px; font-size: 13px; }
+  .header-edit { padding: 0 14px; font-size: 12px; }
+  .search-box { min-height: 48px; padding: 0 12px; }
+  .search-box input { font-size: 16px; } /* iOS 자동 확대 방지 */
+  .sort-control select { font-size: 16px; }
+
+  /* 카드 위 아이콘 버튼: 보이는 크기는 작게, 누르는 영역은 44px */
+  .card-edit, .favorite-button { width: 40px; height: 40px; right: 6px; }
+  .card-edit { top: 6px; }
+  .favorite-button { top: 50px; }
+  .card-edit::before, .favorite-button::before {
+    content: ""; position: absolute; inset: -7px; border-radius: 50%;
+  }
+
+  /* 히어로를 줄여 명단이 첫 화면에 더 빨리 보이게 */
+  .hero { min-height: 168px !important; }
+  .hero-content { padding: 22px 0 !important; }
+  .hero h1 { font-size: 38px !important; line-height: 1.02 !important; }
+  .hero-eyebrow, .hero-content p:not(:first-of-type) { font-size: 11px !important; }
+  .roster-section { padding-top: 26px !important; }
+  .section-heading { margin-bottom: 16px !important; }
+  .section-heading h2 { font-size: 32px !important; }
+
+  /* 한 화면에 카드가 더 보이도록 열/간격 정리 */
+  .roster-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px 10px !important;
+  }
+  .card-caption { padding: 7px 8px !important; font-size: 12.5px !important; }
+  .card-image { aspect-ratio: 4 / 4.6; }
+
+  /* 맨 위로 버튼이 하단 바와 겹치지 않게 */
+  .back-to-top { bottom: calc(84px + env(safe-area-inset-bottom, 0px)) !important; }
+
+  /* 하단 내비게이션 바 */
+  .mobile-dock {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 120;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: rgba(12,12,13,.94);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(255,255,255,.10);
+  }
+  .mobile-dock button {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px;
+    min-height: 52px;
+    border: 0; background: transparent;
+    color: #b9b9bd; font-size: 10.5px; letter-spacing: .02em;
+    cursor: pointer;
+  }
+  .mobile-dock button:active { color: #fff; background: rgba(255,255,255,.06); }
+  .mobile-dock button svg { width: 21px; height: 21px; stroke-width: 1.7; }
+  .mobile-dock button.is-on { color: var(--brand-accent, #d61a30); }
+}
+@media (min-width: 821px) { .mobile-dock { display: none; } }
+</style>

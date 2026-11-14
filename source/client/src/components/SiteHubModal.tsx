@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { useDialogFocus } from "@/lib/a11y";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Globe, Heart, Pencil, Plus, RotateCw, Search, Settings2, X } from "lucide-react";
 import { defaultSiteCategories, siteDomain, type SiteCategoryItem, type SiteItem } from "@/data/sites";
 import { wrestlerLinks, type Wrestler } from "@/lib/storage";
@@ -224,12 +223,9 @@ export default function SiteHubModal({
     setCatManagerOpen(false);
   };
 
-  const modalRef = useRef<HTMLElement | null>(null);
-  useDialogFocus(modalRef);
-
   return (
     <div className="site-hub-backdrop" role="presentation" onMouseDown={e => e.target === e.currentTarget && onClose()}>
-      <section ref={modalRef} className="site-hub-modal" role="dialog" aria-modal="true" aria-labelledby="site-hub-title" onMouseDown={e => e.stopPropagation()}>
+      <section className="site-hub-modal" role="dialog" aria-modal="true" aria-labelledby="site-hub-title" onMouseDown={e => e.stopPropagation()}>
         <header className="site-hub-header">
           <div>
             <p className="site-hub-kicker">WRESTLING NETWORK & LINKS</p>

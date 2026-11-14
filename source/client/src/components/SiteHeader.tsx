@@ -16,6 +16,9 @@ type Props = {
   onOpenDesign: () => void;
   onAddWrestler: () => void;
   onOpenSiteHub: (options?: { editTarget?: SiteItem | "new" | null; category?: string }) => void;
+  onOpenGh?: () => void;
+  onBackup?: () => void;
+  ghStatus?: "idle" | "syncing" | "synced" | "error";
 };
 
 type PillBox = { left: number; width: number; opacity: number };
@@ -32,6 +35,9 @@ export default function SiteHeader({
   onOpenDesign,
   onAddWrestler,
   onOpenSiteHub,
+  onOpenGh,
+  onBackup,
+  ghStatus = "idle",
 }: Props) {
   const [siteMenuOpen, setSiteMenuOpen] = useState(false);
   const closeTimer = useRef<number | null>(null);
@@ -307,9 +313,20 @@ export default function SiteHeader({
           className="header-controls"
           onMouseLeave={resetCtrlPill}
         >
+          <span
+            className="ctrl-hover-bg"
+            aria-hidden="true"
+            style={{
+              transform: `translate3d(${ctrlPill.left}px, 0, 0)`,
+              width: `${ctrlPill.width}px`,
+              opacity: ctrlPill.opacity,
+            }}
+          />
           <button
             className={`header-edit ${manageMode ? "is-active" : ""}`}
             disabled={!editable}
+            onMouseEnter={e => moveCtrlPill(e.currentTarget)}
+            onFocus={e => moveCtrlPill(e.currentTarget)}
             onClick={onToggleManage}
             aria-label={manageMode ? "편집 완료" : "로스터 편집"}
           >
@@ -319,6 +336,8 @@ export default function SiteHeader({
           <button
             className="header-edit header-design"
             disabled={!editable}
+            onMouseEnter={e => moveCtrlPill(e.currentTarget)}
+            onFocus={e => moveCtrlPill(e.currentTarget)}
             onClick={onOpenDesign}
             aria-label="디자인 편집"
           >
@@ -328,12 +347,25 @@ export default function SiteHeader({
           <button
             className="header-edit header-add"
             disabled={!editable}
+            onMouseEnter={e => moveCtrlPill(e.currentTarget)}
+            onFocus={e => moveCtrlPill(e.currentTarget)}
             onClick={onAddWrestler}
             aria-label="선수 추가"
           >
             <Plus size={15} />
             <span>선수 추가</span>
           </button>
+          {onOpenGh && (
+            <button className="header-edit header-gh" disabled={!editable} onClick={onOpenGh} aria-label="깃허브 자동 저장 설정">
+              <span className={`gh-sync-dot is-${ghStatus}`} />
+              <span>{ghStatus === "syncing" ? "깃허브 저장 중" : ghStatus === "synced" ? "깃허브 자동저장 ON" : ghStatus === "error" ? "깃허브 연동 오류" : "깃허브 자동저장"}</span>
+            </button>
+          )}
+          {onBackup && (
+            <button className="header-edit header-backup" disabled={!editable} onClick={onBackup} aria-label="백업 파일 저장">
+              <span>백업</span>
+            </button>
+          )}
         </div>
       </div>
     </header>

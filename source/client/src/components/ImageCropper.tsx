@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ImageCrop } from "@/lib/storage";
 
 type Props = {
@@ -12,10 +12,11 @@ const MAX_ZOOM = 3.5;
 const MAX_PAN = 120; // 사진 크기와 상관없이 언제든 상하좌우 ±120%까지 자유롭게 이동 가능
 const SNAP = 2; // 자석 맞춤이 켜져 있을 때만 0% 근처에서 스냅
 
-// 프로필 사진 위치·크기 자유 조절기 (100% 배율에서도 즉시 드래그 가능 + 마우스 휠 줌 + X/Y 슬라이더 + 원클릭 위치 프리셋)
+// 프로필 사진 위치·크기 자유 조절기 (100% 배율에서도 즉시 드래그 가능 + 마우스 휠 줌 시 모달 스크롤 완전 차단 + X/Y 슬라이더 + 원클릭 위치 프리셋)
 export default function ImageCropper({ src, crop, onChange }: Props) {
   const boxRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ startX: number; startY: number; origin: ImageCrop } | null>(null);
+  const wheelHandlerRef = useRef<((event: WheelEvent) => void) | null>(null);
   const [dragging, setDragging] = useState(false);
   const [snapEnabled, setSnapEnabled] = useState(false); // 기본은 자석 걸림 없이 부드러운 자유 이동
 
@@ -34,6 +35,24 @@ export default function ImageCropper({ src, crop, onChange }: Props) {
       y: clampPan(snap ? snapTo(rawY) : rawY),
     });
   };
+
+  // 사진 위에서 마우스 휠을 굴릴 때 모달 스크롤이 함께 움직이지 않도록 non-passive 네이티브 이벤트로 제어
+  wheelHandlerRef.current = (event: WheelEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const delta = event.deltaY < 0 ? 0.08 : -0.08;
+    update({ zoom: zoom + delta }, { snap: false });
+  };
+
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const onNativeWheel = (event: WheelEvent) => {
+      wheelHandlerRef.current?.(event);
+    };
+    el.addEventListener("wheel", onNativeWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onNativeWheel);
+  }, []);
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -54,13 +73,6 @@ export default function ImageCropper({ src, crop, onChange }: Props) {
   const endDrag = () => {
     dragRef.current = null;
     setDragging(false);
-  };
-
-  // 사진 위에서 마우스 휠을 굴려 바로 확대/축소
-  const onWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const delta = event.deltaY < 0 ? 0.08 : -0.08;
-    update({ zoom: zoom + delta }, { snap: false });
   };
 
   // 방향키: 1%씩 이동 (Shift 를 누르면 5%씩 빠른 이동)
@@ -92,7 +104,6 @@ export default function ImageCropper({ src, crop, onChange }: Props) {
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
-        onWheel={onWheel}
         onDoubleClick={() => onChange({ x: 0, y: 0, zoom: 1 })}
         onKeyDown={onKeyDown}
         tabIndex={0}

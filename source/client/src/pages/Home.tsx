@@ -7,26 +7,23 @@ import ProfileInfoModal from "@/components/ProfileInfoModal";
 import RosterSection from "@/components/RosterSection";
 import SiteHeader from "@/components/SiteHeader";
 import SiteHubModal from "@/components/SiteHubModal";
+import GhSyncModal from "@/components/GhSyncModal";
 import { defaultWrestlers, ROSTER_VERSION } from "@/data/roster";
 import { defaultSiteCategories, defaultSites, type SiteCategoryItem, type SiteItem } from "@/data/sites";
 import { defaultDesign, normalizeDesign, type SiteDesign } from "@/lib/design";
 import { displayName, loadRoster, saveRoster, uploadRosterImage, wrestlerNames, type RosterState, type Wrestler } from "@/lib/storage";
-import { profileSlug, readRosterUrl, wrestlerBySlug, writeRosterUrl } from "@/lib/urlState";
+import { downloadBackup, fetchRemote, isConfigured, loadGhConfig, pushRemote, saveGhConfig, sigOf, type GhConfig } from "@/lib/githubSync";
 
-// 처음 화면에 보여줄 기본 상태 (명단 + 기본 디자인 + 기본 외부 사이트/카테고리).
-// 주소에 sort/cols 가 있으면 그 값으로 시작해 공유한 화면과 같은 상태로 열립니다.
-function makeInitialState(): RosterState {
-  const fromUrl = readRosterUrl();
-  return {
-    wrestlers: defaultWrestlers,
-    columns: fromUrl.cols ?? 7,
-    sortOrder: fromUrl.sort ?? "default",
-    design: defaultDesign,
-    sites: defaultSites,
-    siteCategories: defaultSiteCategories,
-    sourceVersion: ROSTER_VERSION,
-  };
-}
+// 처음 화면에 보여줄 기본 상태 (명단 129명 + 기본 디자인 + 기본 외부 사이트/카테고리)
+const initialState: RosterState = {
+  wrestlers: defaultWrestlers,
+  columns: 7,
+  sortOrder: "default",
+  design: defaultDesign,
+  sites: defaultSites,
+  siteCategories: defaultSiteCategories,
+  sourceVersion: ROSTER_VERSION,
+};
 
 // 저장된 메뉴에 SITE가 없으면 자동으로 추가해 줍니다.
 function ensureSiteNav(design: SiteDesign): SiteDesign {
@@ -52,7 +49,7 @@ function useResponsiveColumns(columns: number) {
 
 export default function Home() {
   // ── 화면 상태 ────────────────────────────────────────────────
-  const [roster, setRoster] = useState<RosterState>(makeInitialState);
+  const [roster, setRoster] = useState<RosterState>(initialState);
   const [ready, setReady] = useState(false); // 저장된 로스터를 다 읽었는지
   const [loadFailed, setLoadFailed] = useState(false);
   const [storageError, setStorageError] = useState(false);
@@ -64,6 +61,11 @@ export default function Home() {
   const [siteEditTarget, setSiteEditTarget] = useState<SiteItem | "new" | null>(null);
   const [siteInitialCat, setSiteInitialCat] = useState<string>("ALL");
   const [showTop, setShowTop] = useState(false); // 맨 위로 버튼
+  const [ghConfig, setGhConfig] = useState<GhConfig>(() => loadGhConfig());
+  const [ghOpen, setGhOpen] = useState(false);
+  const [ghStatus, setGhStatus] = useState<"idle" | "syncing" | "synced" | "error">("idle");
+  const skipPush = useRef(true); // 원격에서 받아온 직후의 저장은 건너뜀
+  const syncTimer = useRef<number | null>(null);
 
   const firstSave = useRef(true); // 불러오기 직후의 저장은 건너뜀
   const visibleColumns = useResponsiveColumns(roster.columns);
@@ -75,63 +77,57 @@ export default function Home() {
       : defaultSiteCategories;
   const editable = ready;
 
-  // ── 불러오기 ────────────────────────────────────────────────
+  // ── 불러오기: 원격(roster-data.json) → 로컬 순서로 채택 ──────────
   useEffect(() => {
     let cancelled = false;
-    loadRoster()
-      .then(saved => {
-        if (cancelled || !saved) return;
-        const outdated = saved.sourceVersion !== ROSTER_VERSION;
-        const favorites = new Map(saved.wrestlers.map(w => [w.id, Boolean(w.favorite)]));
-        const wrestlers = outdated
-          ? defaultWrestlers.map(w => ({ ...w, favorite: favorites.get(w.id) ?? false }))
-          : saved.wrestlers.map(w => ({ ...w, names: wrestlerNames(w) }));
-        setRoster({
-          wrestlers,
-          columns: Math.max(3, Math.min(9, saved.columns || 7)),
-          sortOrder: saved.sortOrder ?? "default",
-          design: ensureSiteNav(normalizeDesign(saved.design ?? defaultDesign)),
-          sites: Array.isArray(saved.sites) && saved.sites.length > 0 ? saved.sites : defaultSites,
-          siteCategories:
-            Array.isArray(saved.siteCategories) && saved.siteCategories.length > 0
-              ? saved.siteCategories
-              : defaultSiteCategories,
-          sourceVersion: ROSTER_VERSION,
-        });
-      })
-      .catch(() => !cancelled && setLoadFailed(true))
-      .finally(() => !cancelled && setReady(true));
-    return () => {
-      cancelled = true;
+
+    const apply = (saved: RosterState) => {
+      const outdated = saved.sourceVersion !== ROSTER_VERSION;
+      const favorites = new Map(saved.wrestlers.map(w => [w.id, Boolean(w.favorite)]));
+      const prospects = new Map(saved.wrestlers.map(w => [w.id, Boolean(w.prospect)]));
+      const wrestlers = outdated
+        ? defaultWrestlers.map(w => ({ ...w, favorite: favorites.get(w.id) ?? false, prospect: prospects.get(w.id) ?? false }))
+        : saved.wrestlers.map(w => ({ ...w, names: wrestlerNames(w) }));
+      setRoster({
+        wrestlers,
+        columns: Math.max(3, Math.min(9, saved.columns || 7)),
+        sortOrder: saved.sortOrder ?? "default",
+        design: ensureSiteNav(normalizeDesign(saved.design ?? defaultDesign)),
+        sites: Array.isArray(saved.sites) && saved.sites.length > 0 ? saved.sites : defaultSites,
+        siteCategories:
+          Array.isArray(saved.siteCategories) && saved.siteCategories.length > 0 ? saved.siteCategories : defaultSiteCategories,
+        sourceVersion: ROSTER_VERSION,
+      });
     };
+
+    (async () => {
+      const cfg = loadGhConfig();
+      const [remote, local] = await Promise.all([
+        fetchRemote(cfg).catch(() => null),
+        loadRoster().catch(() => null),
+      ]);
+      if (cancelled) return;
+
+      const remoteSig = remote && Array.isArray(remote.wrestlers) ? sigOf(remote) : "";
+      const savedSig = (() => { try { return localStorage.getItem("ring-roster-remote-sig") || ""; } catch { return ""; } })();
+      const remoteChanged = Boolean(remoteSig) && remoteSig !== savedSig;
+
+      if (remote && (!local || remoteChanged)) {
+        try { localStorage.setItem("ring-roster-remote-sig", remoteSig); } catch {}
+        skipPush.current = true;
+        apply(remote as RosterState);
+      } else if (local) {
+        apply(local);
+      } else if (remote) {
+        apply(remote as RosterState);
+      }
+      setReady(true);
+    })().catch(() => {
+      if (!cancelled) { setLoadFailed(true); setReady(true); }
+    });
+
+    return () => { cancelled = true; };
   }, []);
-
-  // ── 주소(딥링크) ↔ 프로필 팝업 ───────────────────────────────
-  // ?p=선수이름 으로 들어오면 그 선수 정보를 바로 열고, 팝업을 닫으면 주소에서 지웁니다.
-  const openedFromUrl = useRef(false);
-  useEffect(() => {
-    if (!ready || openedFromUrl.current) return;
-    openedFromUrl.current = true;
-    const slug = readRosterUrl().profile;
-    if (!slug) return;
-    const found = wrestlerBySlug(roster.wrestlers, slug);
-    if (found) setInfo(found);
-  }, [ready, roster.wrestlers]);
-
-  useEffect(() => {
-    if (!ready) return;
-    writeRosterUrl({ p: info ? profileSlug(info) : null });
-  }, [info, ready]);
-
-  // 브라우저 뒤로/앞으로 가기로도 팝업이 따라 움직입니다.
-  useEffect(() => {
-    const onPopState = () => {
-      const slug = readRosterUrl().profile;
-      setInfo(slug ? wrestlerBySlug(roster.wrestlers, slug) : null);
-    };
-    window.addEventListener("popstate", onPopState);
-    return () => window.removeEventListener("popstate", onPopState);
-  }, [roster.wrestlers]);
 
   // ── 저장하기 (상태가 바뀔 때마다) ────────────────────────────
   useEffect(() => {
@@ -145,6 +141,23 @@ export default function Home() {
       .catch(() => setStorageError(true));
   }, [roster, ready]);
 
+  // ── 깃허브 자동 저장 (변경 감지 후 1초 뒤 커밋) ────────────────
+  useEffect(() => {
+    if (!ready) return;
+    if (!isConfigured(ghConfig) || ghConfig.autoSync === false) return;
+    if (skipPush.current) { skipPush.current = false; return; }
+    if (syncTimer.current) window.clearTimeout(syncTimer.current);
+    setGhStatus("syncing");
+    syncTimer.current = window.setTimeout(() => {
+      pushRemote(ghConfig, roster, `Auto-sync roster (${roster.wrestlers.length} superstars)`)
+        .then(() => {
+          setGhStatus("synced");
+          try { localStorage.setItem("ring-roster-remote-sig", sigOf(roster)); } catch {}
+        })
+        .catch(() => setGhStatus("error"));
+    }, 1000);
+  }, [roster, ready, ghConfig]);
+
   // 스크롤이 내려가면 "맨 위로" 버튼 표시
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 420);
@@ -156,6 +169,17 @@ export default function Home() {
   // ── 편집 동작 ───────────────────────────────────────────────
   const changeColumns = (delta: number) => setRoster(prev => ({ ...prev, columns: Math.max(3, Math.min(9, prev.columns + delta)) }));
   const changeSort = (sortOrder: RosterState["sortOrder"]) => setRoster(prev => ({ ...prev, sortOrder }));
+  const toggleProspect = (id: string) =>
+    setRoster(prev => ({ ...prev, wrestlers: prev.wrestlers.map(w => (w.id === id ? { ...w, prospect: !w.prospect } : w)) }));
+
+  const saveGh = (next: GhConfig) => { setGhConfig(next); saveGhConfig(next); };
+  const syncNow = async (next: GhConfig) => {
+    await pushRemote(next, roster, "Sync roster-data.json from site");
+    setGhStatus("synced");
+    try { localStorage.setItem("ring-roster-remote-sig", sigOf(roster)); } catch {}
+  };
+  const backup = () => downloadBackup(roster);
+
   const toggleFavorite = (id: string) =>
     setRoster(prev => ({ ...prev, wrestlers: prev.wrestlers.map(w => (w.id === id ? { ...w, favorite: !w.favorite } : w)) }));
 
@@ -226,9 +250,6 @@ export default function Home() {
 
   return (
     <div id="top" className="site-shell" style={cssVars}>
-      <a className="skip-link" href="#roster">
-        본문으로 건너뛰기
-      </a>
       {design.showHeader && (
         <SiteHeader
           design={design}
@@ -245,6 +266,9 @@ export default function Home() {
             setSiteInitialCat(opts?.category ?? "ALL");
             setSiteHubOpen(true);
           }}
+          onOpenGh={() => setGhOpen(true)}
+          onBackup={backup}
+          ghStatus={ghStatus}
         />
       )}
 
@@ -262,6 +286,7 @@ export default function Home() {
         onSort={changeSort}
         onColumns={changeColumns}
         onToggleFavorite={toggleFavorite}
+        onToggleProspect={toggleProspect}
         onEdit={setEditing}
         onAdd={() => setEditing("new")}
         onInfo={setInfo}
@@ -292,6 +317,14 @@ export default function Home() {
             setEditing(info);
             setInfo(null);
           }}
+        />
+      )}
+      {ghOpen && (
+        <GhSyncModal
+          config={ghConfig}
+          onSave={saveGh}
+          onSyncNow={syncNow}
+          onClose={() => setGhOpen(false)}
         />
       )}
       {designOpen && <DesignEditor design={design} onSave={saveDesign} onClose={() => setDesignOpen(false)} />}

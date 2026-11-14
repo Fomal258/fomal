@@ -1,0 +1,28 @@
+<script id="unslop-emoji">
+(function () {
+  var EMOJI = /[\u{1F300}-\u{1FAFF}\u2705\u274C\u2B50\uFE0F]/u;
+  function clean() {
+    var els = document.querySelectorAll("button, a, strong, span, li, p, h1, h2, h3, label");
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      if (el.children.length || !el.firstChild || el.firstChild.nodeType !== 3) continue;
+      var t = el.textContent || "";
+      if (!EMOJI.test(t)) continue;
+      var next = t.replace(/[\u{1F300}-\u{1FAFF}\u2705\u274C]/gu, "").replace(/\s{2,}/g, " ").trim();
+      if (next) el.textContent = next;
+      else el.textContent = t.replace(/[\u{1F300}-\u{1FAFF}\u2705\u274C]/gu, "").trim() || el.textContent;
+    }
+  }
+  function start() {
+    clean();
+    var pending = false;
+    new MutationObserver(function () {
+      if (pending) return;
+      pending = true;
+      setTimeout(function () { pending = false; clean(); }, 120);
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
+})();
+</script>

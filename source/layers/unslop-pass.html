@@ -1,0 +1,207 @@
+<style id="unslop-pass">
+/* ────────────────────────────────────────────────────────────
+   unslop 정리 패스 — 크롬은 조용하게, 색은 카드의 순간에만
+   ──────────────────────────────────────────────────────────── */
+:root {
+  --ink: #0b0b0c;
+  --surface: #131315;
+  --raised: #1b1b1e;
+  --hairline: rgba(255, 255, 255, .10);
+  --text: #f2f2f3;
+  --text-2: #b6b6bb;
+  --muted: #8b8b92;
+  --step-1: 11px;
+  --step-2: 12.5px;
+  --step-3: 14px;
+  --step-4: 18px;
+}
+
+/* 1) 표면: 한 램프로 통일 (라이트 테마 잔재 제거) */
+body, .site-shell { background: var(--ink); }
+.site-header { background: var(--ink); }
+.roster-section { background: var(--ink); }
+.roster-toolbar { background: var(--ink); }
+
+/* 2) 타입: 4단계 + 두 웨이트, 과한 트래킹 제거 */
+.hero-eyebrow, .overline, .brand-type small, .under-grid, .roster-note {
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+.header-edit, .main-nav a, .sort-control select, .alpha-chip, .tab-active {
+  font-size: var(--step-2);
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+.section-heading p { font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--text-2); }
+.hero h1 {
+  font-size: clamp(44px, 4.6vw, 68px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  text-shadow: 0 6px 24px rgba(0, 0, 0, .55);
+}
+.section-heading h2 { font-size: clamp(32px, 3vw, 44px); font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+.hero h1 em, .section-heading h2 span { color: var(--brand-accent, #d61a30); }
+
+/* 3) 크롬의 색: 액센트는 한 번, 나머지는 뉴트럴 */
+.count {
+  background: transparent !important;
+  color: var(--text-2) !important;
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  padding: 2px 6px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--step-1);
+}
+.tab-active { color: var(--text); }
+.alpha-chip { border-radius: 3px; color: var(--text-2); }
+.alpha-chip:disabled { color: #5f5f66; opacity: 1; }
+.roster-toolbar .toolbar-left::after {
+  background: var(--hairline) !important;
+  height: 1px !important;
+}
+.roster-section::before {
+  background: var(--hairline) !important;
+  height: 1px !important;
+  opacity: 1 !important;
+}
+.under-grid, .under-grid p, .roster-note, .roster-note span {
+  color: var(--text-2) !important;
+  font-size: 12.5px;
+}
+.under-grid p { color: var(--muted) !important; }
+.roster-note .desktop-note { color: var(--muted) !important; }
+.alpha-chip.is-active {
+  color: #fff;
+  background: var(--brand-accent, #d61a30);
+  border-color: transparent;
+}
+.add-card {
+  background: var(--surface) !important;
+  border: 1px dashed var(--hairline);
+  border-radius: 4px;
+  color: var(--text-2) !important;
+}
+.add-card strong { color: var(--text); }
+.add-card small { color: var(--muted); }
+.under-grid { color: var(--muted); }
+.under-grid i { background-color: var(--brand-accent, #d61a30); }
+
+/* 4) 효과: 글로우·이중 그림자 정리 */
+.hero.hero-has-strips .hero-content,
+.hero.hero-has-strips h1,
+.hero-film-caption { text-shadow: none !important; }
+.hero h1 { text-shadow: 0 6px 24px rgba(0, 0, 0, .55) !important; }
+.hero::after { background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.72)) !important; }
+.card-shell:hover .card-image {
+  box-shadow: 0 0 0 1px var(--hairline), 0 10px 24px rgba(0, 0, 0, .28) !important;
+}
+.info-modal, .editor-modal, .design-modal, .site-hub-modal {
+  border-radius: 6px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .45);
+}
+
+/* 5) 라운드: 4px 계열로 통일 (칩만 pill 유지) */
+.header-edit, .card-edit, .favorite-button, .columns-control, .search-box,
+.editor-modal input, .gh-sync-modal input, .design-modal input,
+.search-suggestions, .link-pop { border-radius: 4px; }
+.card-image, .wrestler-card { border-radius: 4px; }
+
+/* 5b) 빈 상태가 큰 빈 띠로 보이지 않게 */
+.roster-section { min-height: 0 !important; }
+.empty-state { padding: 56px 0; color: var(--text-2); }
+
+/* 6) 모션: 목적 없는 반복 모션 정리 */
+*, *::before, *::after { animation-duration: .28s; }
+
+
+.ctrl-hover-bg { display: none !important; }
+.header-controls .header-edit:hover,
+.header-controls .header-edit:focus-visible {
+  background: rgba(255, 255, 255, .08) !important;
+  border-color: rgba(255, 255, 255, .22) !important;
+  color: #fff !important;
+}
+
+/* ── unslop 모바일 패스 ─────────────────────────────────────── */
+@media (max-width: 820px) {
+  /* 헤더 압축 + 액션 가로 스크롤 */
+  .site-header { height: auto !important; }
+  .header-inner {
+    min-height: 56px;
+    padding: 8px 14px !important;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .header-inner > div:last-child {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+  .header-inner > div:last-child::-webkit-scrollbar { display: none; }
+  .main-nav { display: none; }           /* 하단 바가 대신함 */
+
+  /* 히어로 축소 */
+  .hero { min-height: 120px !important; }
+  .hero-content { padding: 14px 0 !important; }
+  .hero h1 { font-size: 34px !important; }
+  .hero-film-caption { display: none; }
+  .hero-eyebrow { font-size: 10px; letter-spacing: .14em; }
+
+  /* 섹션·툴바 밀도 */
+  .roster-section { padding: 18px 0 40px !important; }
+  .section-heading { margin-bottom: 10px !important; }
+  .section-heading h2 { font-size: 24px !important; }
+  .section-heading p { display: none; }
+  .roster-toolbar { min-height: 0 !important; gap: 8px !important; padding-bottom: 6px !important; }
+  .toolbar-left { min-height: 40px !important; width: 100%; }
+  .toolbar-right { padding-top: 6px !important; gap: 8px; }
+
+  /* 알파벳: 한 줄 가로 스크롤 */
+  .alpha-filter {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px !important;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .alpha-filter::-webkit-scrollbar { display: none; }
+  .alpha-label { display: none; }
+  .alpha-chip { flex: 0 0 auto; min-width: 48px; height: 48px; font-size: 13px; }
+
+  /* 명판 크기 (모바일 19px → 13.5px, zoom 0.95 반영) */
+  .tc-shell .tc-name-text { font-size: 13.5px !important; letter-spacing: .04em; }
+  .tc-shell .tc-name-text.is-long { font-size: 12.5px !important; }
+  .tc-shell .tc-name-text.is-xlong { font-size: 11.5px !important; }
+  .card-caption { padding: 6px 8px !important; }
+
+  /* 팝업 → 하단 시트 */
+  .editor-modal, .design-modal, .site-hub-modal, .gh-sync-modal {
+    position: fixed !important;
+    left: 0 !important; right: 0 !important; bottom: 0 !important; top: auto !important;
+    width: 100% !important; max-width: 100% !important;
+    max-height: 92vh;
+    overflow-y: auto;
+    margin: 0 !important;
+    border-radius: 12px 12px 0 0 !important;
+  }
+  .info-modal { max-height: 92vh; overflow-y: auto; }
+
+  /* 팝업 닫기 버튼도 44px 확보 */
+  /* zoom 0.95 보정: 48px → 실효 45.6px */
+  .info-modal .info-header button,
+  .editor-modal .editor-header button,
+  .design-modal .design-header button,
+  .site-hub-modal .site-hub-header button,
+  .gh-sync-modal .editor-header button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>

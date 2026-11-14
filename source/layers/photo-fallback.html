@@ -1,0 +1,95 @@
+<script id="photo-fallback">
+(function () {
+  if (window.__photoFallback) return;
+  window.__photoFallback = true;
+
+  var EXTS = ["jpg", "jpeg", "webp", "png"];
+  var cache = {};
+
+  function slug(name) {
+    return name.trim().toLowerCase().replace(/[.']/g, "").replace(/[^a-z0-9가-힣]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  // 후보를 2개로 제한: 정확한 이름 → 슬러그 (404 요청 최소화)
+  function candidates(name) {
+    var bases = [name.trim(), slug(name)];
+    var out = [];
+    bases.forEach(function (b) {
+      if (!b) return;
+      out.push("photos/" + encodeURIComponent(b + ".jpg"));
+    });
+    return out;
+  }
+
+  var MANIFEST = null;
+  function manifestSet() {
+    if (MANIFEST) return MANIFEST;
+    MANIFEST = new Set();
+    (window.__photoManifest || []).forEach(function (f) {
+      MANIFEST.add(f.toLowerCase());
+      MANIFEST.add(slug(f));
+    });
+    return MANIFEST;
+  }
+  function listed(name) {
+    var set = manifestSet();
+    return set.has(name.toLowerCase()) || set.has(slug(name));
+  }
+
+  function tryLoad(name) {
+    if (!listed(name)) return Promise.resolve("");
+    if (cache[name] !== undefined) return Promise.resolve(cache[name]);
+    var list = candidates(name);
+    return new Promise(function (resolve) {
+      (function next(i) {
+        if (i >= list.length) { cache[name] = ""; resolve(""); return; }
+        var img = new Image();
+        img.onload = function () { cache[name] = list[i]; resolve(list[i]); };
+        img.onerror = function () { next(i + 1); };
+        img.src = list[i];
+      })(0);
+    });
+  }
+
+  function fill(host, src, name) {
+    if (!host || host.dataset.photoFilled) return;
+    host.dataset.photoFilled = "1";
+    var poster = host.querySelector(".silhouette-poster");
+    var img = document.createElement("img");
+    img.src = src;
+    img.alt = name + " 프로필";
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%;";
+    if (poster && poster.parentNode) {
+      poster.parentNode.insertBefore(img, poster);
+      poster.remove();
+    } else {
+      host.appendChild(img);
+    }
+    host.classList.add("has-photo");
+    host.classList.remove("is-poster");
+  }
+
+  function scan() {
+    document.querySelectorAll(".card-shell").forEach(function (card) {
+      if (card.dataset.photoFilled) return;
+      if (!card.querySelector(".silhouette-poster")) return;
+      var nameEl = card.querySelector(".tc-name-text");
+      var name = nameEl ? nameEl.textContent.trim() : "";
+      if (!name) return;
+      tryLoad(name).then(function (src) { if (src) fill(card.querySelector(".card-image") || card, src, name); });
+    });
+  }
+
+  var pending = false;
+  new MutationObserver(function () {
+    if (pending) return;
+    pending = true;
+    setTimeout(function () { pending = false; scan(); }, 150);
+  }).observe(document.body, { childList: true, subtree: true });
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", scan);
+  else scan();
+})();
+</script>

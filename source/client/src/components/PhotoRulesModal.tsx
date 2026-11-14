@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RotateCcw, Save, X } from "lucide-react";
 import { findPhotoFile, getPhotoRules, resetPhotoRules, savePhotoRules, type PhotoRules } from "@/lib/photoRules";
 import { displayName, wrestlerNames, type Wrestler } from "@/lib/storage";
-import { useDialogFocus } from "@/lib/a11y";
 
 type Props = {
   wrestlers: Wrestler[];
@@ -54,12 +53,9 @@ export default function PhotoRulesModal({ wrestlers, onClose }: Props) {
     onClose();
   };
 
-  const modalRef = useRef<HTMLElement | null>(null);
-  useDialogFocus(modalRef);
-
   return (
     <div className="editor-backdrop" role="presentation" onMouseDown={event => event.target === event.currentTarget && onClose()}>
-      <section ref={modalRef} className="editor-modal rules-modal" role="dialog" aria-modal="true" aria-labelledby="photo-rules-title" onMouseDown={event => event.stopPropagation()}>
+      <section className="editor-modal rules-modal" role="dialog" aria-modal="true" aria-labelledby="photo-rules-title" onMouseDown={event => event.stopPropagation()}>
         <header className="editor-header">
           <h2 id="photo-rules-title">사진 매칭 규칙</h2>
           <button className="editor-secondary" type="button" onClick={onClose} aria-label="닫기">

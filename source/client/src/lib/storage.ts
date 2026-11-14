@@ -12,6 +12,7 @@ export type Wrestler = {
   url?: string; // 예전 데이터 호환용 (단일 링크)
   bio?: string; // 프로필 팝업에 보이는 소개
   favorite?: boolean; // 찜 여부
+  prospect?: boolean; // 유망주 여부 (01번 플래티넘 코발트 타종 벨)
   createdAt?: number; // 등록 시각 (최신순/오래된순 정렬에 사용)
   imageCrop?: ImageCrop; // 사진 위치(%), 크기 배율
 };
@@ -55,7 +56,7 @@ export const linkLabel = (url: string) => {
   }
 };
 
-export type SortOrder = "default" | "newest" | "oldest" | "asc" | "desc" | "favorites" | "random";
+export type SortOrder = "default" | "newest" | "oldest" | "asc" | "desc" | "favorites" | "prospects" | "random";
 
 export type RosterState = {
   wrestlers: Wrestler[];

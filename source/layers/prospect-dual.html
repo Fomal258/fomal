@@ -1,0 +1,37 @@
+<style id="prospect-dual">
+/* ── 듀얼 하이브리드: 금(좌상) + 청(우하) 분할 조명 ── */
+.tc-shell.is-champ.is-prospect .tc-frame {
+  background:
+    radial-gradient(58% 62% at 16% 14%, rgba(255, 250, 224, .98) 0%, rgba(240, 198, 96, .72) 34%, rgba(180, 130, 40, .22) 62%, rgba(0, 0, 0, 0) 78%),
+    radial-gradient(58% 62% at 84% 86%, rgba(236, 249, 255, .98) 0%, rgba(96, 165, 250, .70) 36%, rgba(37, 99, 235, .24) 64%, rgba(0, 0, 0, 0) 80%),
+    linear-gradient(135deg, #171006 0%, #3a2a0c 26%, #0c111c 52%, #0e2444 74%, #0a1424 100%) !important;
+  box-shadow:
+    -7px -7px 24px rgba(250, 204, 21, .26),
+    7px 7px 24px rgba(59, 130, 246, .30),
+    0 18px 38px rgba(0, 0, 0, .86) !important;
+}
+.tc-shell.is-champ.is-prospect:hover .tc-frame {
+  background:
+    radial-gradient(66% 70% at 14% 12%, #ffffff 0%, rgba(250, 226, 140, .85) 30%, rgba(200, 150, 50, .28) 60%, rgba(0, 0, 0, 0) 78%),
+    radial-gradient(66% 70% at 86% 88%, #ffffff 0%, rgba(160, 205, 255, .85) 32%, rgba(37, 99, 235, .30) 62%, rgba(0, 0, 0, 0) 80%),
+    linear-gradient(135deg, #1d1408 0%, #46320d 26%, #0d1320 52%, #102a4f 74%, #0a1424 100%) !important;
+  box-shadow:
+    -9px -9px 28px rgba(250, 204, 21, .34),
+    9px 9px 28px rgba(59, 130, 246, .40),
+    0 22px 44px rgba(0, 0, 0, .9) !important;
+}
+/* 이름: 금 → 백금 → 코발트로 이어지는 3색 */
+.tc-shell.is-champ.is-prospect .tc-name-text,
+.tc-shell.is-champ.is-prospect:hover .tc-name-text {
+  background: linear-gradient(100deg, #ffe89e 0%, #ffffff 44%, #dbeafe 62%, #60a5fa 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: #e0f2fe !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+  filter: drop-shadow(0 1.5px 0 #020617) drop-shadow(0 3px 5px rgba(0, 0, 0, .85)) !important;
+}
+
+/* ── 유망주 필터 (정렬 옵션과 연동) ── */
+.roster-grid.prospect-filter .card-shell:not(.is-prospect) { display: none !important; }
+</style>

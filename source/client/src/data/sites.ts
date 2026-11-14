@@ -24,7 +24,7 @@ export const defaultSiteCategories: SiteCategoryItem[] = [
   { key: "VIDEO", label: "VIDEO · 영상", color: "#c9162b" },
   { key: "PROMOTION", label: "PROMOTION · 단체", color: "#111111" },
   { key: "STATS", label: "STATS · 전적/DB", color: "#1d4ed8" },
-  { key: "NEWS", label: "NEWS · 뉴스/커뮤니티", color: "#6d28d9" },
+  { key: "NEWS", label: "NEWS · 뉴스/커뮤니티", color: "#3f3f46" },
   { key: "SHOP", label: "SHOP · 티켓/굿즈", color: "#047857" },
   { key: "ETC", label: "ETC · 기타", color: "#52525b" },
 ];

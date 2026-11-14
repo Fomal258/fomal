@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Check, Link2, Pencil, X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 import { imageOf, probePhoto } from "@/data/photos";
 import { cropTransform, displayName, linkLabel, wrestlerLinks, wrestlerNames, type Wrestler } from "@/lib/storage";
 import type { SiteDesign } from "@/lib/design";
-import { useDialogFocus } from "@/lib/a11y";
-import { profileUrl } from "@/lib/urlState";
 
 type Props = {
   wrestler: Wrestler;
@@ -45,23 +43,7 @@ export default function ProfileInfoModal({ wrestler, animation, duration, onClos
     };
   }, [directPhoto, wrestler.id]);
   const [closing, setClosing] = useState(false); // 닫히는 애니메이션 중
-  const [copied, setCopied] = useState(false); // 공유 링크 복사 알림
   const timer = useRef<number | null>(null);
-  const modalRef = useRef<HTMLElement | null>(null);
-  useDialogFocus(modalRef, !closing);
-
-  // 지금 보고 있는 선수의 공유 주소(?p=)를 클립보드에 복사합니다.
-  const copyLink = async () => {
-    const link = profileUrl(wrestler);
-    try {
-      await navigator.clipboard.writeText(link);
-    } catch {
-      window.prompt("이 주소를 복사하세요", link);
-      return;
-    }
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
-  };
 
   // 닫기: 애니메이션이 있으면 끝난 뒤에 실제로 닫습니다.
   const requestClose = useCallback(() => {
@@ -101,7 +83,6 @@ export default function ProfileInfoModal({ wrestler, animation, duration, onClos
       }}
     >
       <section
-        ref={modalRef}
         className={`info-modal ${stateClass}`}
         role="dialog"
         aria-modal="true"
@@ -131,14 +112,7 @@ export default function ProfileInfoModal({ wrestler, animation, duration, onClos
                 <>
                   {<span className="card-fill" style={{ backgroundImage: `url("${photo}")` }} />}
                   <div className="info-stage" style={{ transform: cropTransform(wrestler.imageCrop) }}>
-                    <img
-                      src={photo}
-                      alt={`${name} 프로필`}
-                      decoding="async"
-                      fetchPriority="high"
-                      draggable={false}
-                      onError={() => setFailed(true)}
-                    />
+                    <img src={photo} alt={`${name} 프로필`} onError={() => setFailed(true)} />
                   </div>
                 </>
               ) : (
@@ -193,17 +167,13 @@ export default function ProfileInfoModal({ wrestler, animation, duration, onClos
               </div>
             )}
 
-            <div className="info-actions">
-              <button className="info-link" type="button" onClick={copyLink}>
-                {copied ? <Check size={14} /> : <Link2 size={14} />}
-                {copied ? "복사됨" : "링크 복사"}
-              </button>
-              {onEdit && (
+            {onEdit && (
+              <div className="info-actions">
                 <button className="info-link" type="button" onClick={onEdit}>
                   <Pencil size={14} /> 프로필 수정
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
