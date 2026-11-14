@@ -7954,6 +7954,7 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
 
     </script>
   
+<script id="photo-manifest">window.__photoManifest=["1-called-manders", "Adam Frost", "Aigle Blanc", "Alex Reynolds", "Alex Shelley", "Alexander Grey", "Andrade El Idolo", "Andrew Everett", "Bad Dude Tito", "Bishop Kaun", "Brady Phillips", "Brian Cage", "Bryan Idol", "Calum Black", "Casey Ferreira", "Chandler Hopkins", "Channing Decker", "Charlie Sterling", "Chase Emery", "Chris Tyler", "Crazzy Steve", "Danny Isit", "Davey Boy Smith Jr.", "Duke Fairfax", "Eddie Edwards", "Flip Gordon", "Fred Rosser", "Gianni Valletta", "Heddi Karaoui", "Hunter James", "Iestyn Rees", "Jack Morris", "Jake Parnell", "Jarett Diaz", "Jason Hotch", "Jimmy House", "Jimmy Townsend", "Joe Coffey", "Joel Redman", "Joey Osborne", "Jordan Cruz", "Kaz Hayashi", "Ken Anderson", "Lincoln Spectre", "Luke Hawx", "Marko-Estrada", "Mick Moretti", "Mike Mondo", "Nate Prince", "Nic Nemeth", "PCO", "Ray Bruce", "Ricky Smokes", "Ricky South", "Royce Isaacs", "Sam Osborne", "Satoshi Kojima", "Sid Scala", "Tamas Szabo", "Thomas Heim", "Tom La Ruffa", "Tommy Billington", "Tony Nese", "Tucker", "Tyler Hawke", "Wardlow", "Warhorse", "ace-austin", "adam-brooks", "adriano", "alex-duke", "alexander-berkner", "carnage", "fabio-ferrari", "heinrich-zorn", "heinrich-zorn", "images", "lee-morrow", "mexxberg", "robbie-thorpe", "steve-gibki"];</script>
 <script id="photo-fallback">
 (function () {
   if (window.__photoFallback) return;
@@ -7977,7 +7978,23 @@ ry.createRoot(document.getElementById("root")).render(c.jsx(j1,{}));
     return out;
   }
 
+  var MANIFEST = null;
+  function manifestSet() {
+    if (MANIFEST) return MANIFEST;
+    MANIFEST = new Set();
+    (window.__photoManifest || []).forEach(function (f) {
+      MANIFEST.add(f.toLowerCase());
+      MANIFEST.add(slug(f));
+    });
+    return MANIFEST;
+  }
+  function listed(name) {
+    var set = manifestSet();
+    return set.has(name.toLowerCase()) || set.has(slug(name));
+  }
+
   function tryLoad(name) {
+    if (!listed(name)) return Promise.resolve("");
     if (cache[name] !== undefined) return Promise.resolve(cache[name]);
     var list = candidates(name);
     return new Promise(function (resolve) {
