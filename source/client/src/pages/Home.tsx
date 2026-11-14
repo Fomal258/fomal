@@ -113,7 +113,10 @@ export default function Home() {
       setRoster({
         wrestlers,
         columns: Math.max(3, Math.min(9, saved.columns || 7)),
-        sortOrder: saved.sortOrder ?? "default",
+        sortOrder:
+          saved.sortOrder === "prospects" && !wrestlers.some(w => w.prospect)
+            ? "default" // 유망주가 하나도 없는데 필터가 걸려 있으면 전체로 복구
+            : saved.sortOrder ?? "default",
         design: ensureSiteNav(normalizeDesign(saved.design ?? defaultDesign)),
         sites: Array.isArray(saved.sites) && saved.sites.length > 0 ? saved.sites : defaultSites,
         siteCategories:

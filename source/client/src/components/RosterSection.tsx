@@ -511,7 +511,7 @@ export default function RosterSection(props: Props) {
   }, [query, letter, roster.sortOrder]);
 
   const suggestions = query.trim() ? filtered.slice(0, 7) : [];
-  const isEmpty = filtered.length === 0 && (query.length > 0 || roster.sortOrder === "favorites");
+  const isEmpty = filtered.length === 0 && (query.length > 0 || roster.sortOrder === "favorites" || roster.sortOrder === "prospects");
 
   // 검색창 키보드 조작 (↑↓ 이동, Enter 선택, Esc 닫기)
   const onSearchKey = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -695,10 +695,18 @@ export default function RosterSection(props: Props) {
         ) : isEmpty ? (
           <div className="empty-state">
             <Heart size={25} />
-            <strong>{roster.sortOrder === "favorites" ? "찜한 선수가 없습니다" : "검색 결과가 없습니다"}</strong>
+            <strong>
+              {roster.sortOrder === "favorites"
+                ? "찜한 선수가 없습니다"
+                : roster.sortOrder === "prospects"
+                  ? "유망주로 등록한 선수가 없습니다"
+                  : "검색 결과가 없습니다"}
+            </strong>
             <span>
               {roster.sortOrder === "favorites"
                 ? "선수 카드의 하트 버튼을 눌러 찜해 보세요."
+                : roster.sortOrder === "prospects"
+                  ? "카드의 종 모양 버튼을 눌러 유망주로 등록해 보세요."
                 : letter !== "all"
                   ? "이 글자로 시작하는 선수가 없습니다. 다른 글자를 골라 보세요."
                   : "다른 이름으로 검색해 보세요."}
